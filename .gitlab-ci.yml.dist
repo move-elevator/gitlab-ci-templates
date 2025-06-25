@@ -1,0 +1,31 @@
+#-----------------------------------------------------------------------------------------------------------------------
+# INCLUDES
+#-----------------------------------------------------------------------------------------------------------------------
+include:
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-editorconfig.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-cs-fixer.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-stan.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-rector.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-yaml-lint.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
+
+#-----------------------------------------------------------------------------------------------------------------------
+# CONFIGURATION
+#-----------------------------------------------------------------------------------------------------------------------
+variables:
+  BUILD_COMPOSER_VERSION: "2.8"
+  BUILD_NODE_VERSION: "22"
+
+#-----------------------------------------------------------------------------------------------------------------------
+# STAGES
+#-----------------------------------------------------------------------------------------------------------------------
+stages:
+  - build
+  - analyze
+
+

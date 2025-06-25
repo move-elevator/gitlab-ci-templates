@@ -1,0 +1,19 @@
+# Purpose:
+#   Analyze job for checking all project files according the editorconfig
+#
+# Dependency:
+#   Composer package "armin/editorconfig-cli" and a composer script "lint:editorconfig"
+#
+analyze:editorconfig:
+  image:
+    name: composer:${BUILD_COMPOSER_VERSION}
+  stage: analyze
+  needs: [ "build:php" ]
+  script:
+    - composer run lint:editorconfig
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+    - if: '$CI_COMMIT_TAG == null'

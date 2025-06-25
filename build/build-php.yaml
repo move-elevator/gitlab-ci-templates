@@ -1,0 +1,24 @@
+# Purpose:
+#   Install composer dependencies
+#
+build:php:
+  image:
+    name: composer:${BUILD_COMPOSER_VERSION}
+  stage: build
+  cache:
+    - key:
+        files:
+          - composer.lock
+          - public/.htaccess
+      paths:
+        - .composer-cache/
+        - vendor/
+        - public/
+  script:
+    - composer config -g cache-dir "$(pwd)/.composer-cache"
+    - if [ ! -d "vendor" ]; then composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts $COMPOSER_INSTALL_OPTIONS; fi
+  artifacts:
+    paths:
+      - vendor/
+      - public/
+    expire_in: 1 day

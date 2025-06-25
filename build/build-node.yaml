@@ -1,0 +1,22 @@
+# Purpose:
+#   Install node dependencies and build frontend assets
+#
+# Dependency:
+#   Npm script "build"
+#
+build:node:
+  image:
+    name: node:${BUILD_NODE_VERSION}
+  stage: build
+  cache:
+    - key:
+        files:
+          - package-lock.json
+      paths:
+        - node_modules/
+  script:
+    - if [ ! -d "node_modules" ]; then npm ci --unsafe-perm; fi
+    - npm run build
+  artifacts:
+    paths:
+    expire_in: 1 day

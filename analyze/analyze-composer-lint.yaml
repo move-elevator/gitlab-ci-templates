@@ -1,0 +1,21 @@
+# Purpose:
+#   Analyze job for normalizing the composer.json file
+#
+# Dependency:
+#   Composer package "ergebnis/composer-normalize" and a composer script "lint:composer:normalize"
+#
+analyze:composer:lint:
+  image:
+    name: composer:${BUILD_COMPOSER_VERSION}
+  stage: analyze
+  needs: [ "build:php" ]
+  script:
+    - composer run lint:composer:normalize
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+    - if: '$CI_COMMIT_TAG == null'
+      changes:
+        - "composer.json"
