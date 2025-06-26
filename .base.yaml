@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------------------------------------------------------------
+# CONFIGURATION
+#-----------------------------------------------------------------------------------------------------------------------
+variables:
+  BUILD_COMPOSER_VERSION: "2.8"
+  BUILD_NODE_VERSION: "22"
+  DEFAULT_IMAGE_BUILD_COMPOSER: "composer:${BUILD_COMPOSER_VERSION}"
+  DEFAULT_IMAGE_BUILD_NODE: "node:${BUILD_NODE_VERSION}"
+
+#-----------------------------------------------------------------------------------------------------------------------
+# STAGES
+#-----------------------------------------------------------------------------------------------------------------------
+stages:
+  - build
+  - analyze
+
+#-----------------------------------------------------------------------------------------------------------------------
+# SSH
+#-----------------------------------------------------------------------------------------------------------------------
+.ssh:
+  before_script:
+    - DATE=`date +%s`
+    - TITLE="Install SSH Key"
+    - echo -e "\e[0Ksection_start:${DATE}:${DATE}[collapsed=true]\r\e[0K\033[1;96m${TITLE}\033[m"
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    - type ssh-agent 2> /dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+    ## Run ssh-agent (inside the build environment)
+    - eval $(ssh-agent -s)
+    ## Create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+      ## Add the SSH key stored in SSH_KEY variable to the agent store
+      ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+    - touch ~/.ssh/config
+    - chmod 700 -R ~/.ssh
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ## add all SSH_HOST variables to known_hosts file
+    - printenv | grep ^SSH_HOST | while read line; do ssh-keyscan -p ${SSH_PORT} ${line##*=} >> ~/.ssh/known_hosts; done
+    - echo "${SSH_HOST}" >> /etc/hosts
+    - echo -e "Host *\n\tStrictHostKeyChecking yes\n\tUserKnownHostsFile=~/.ssh/known_hosts\n\n" > ~/.ssh/config
+    - echo -e "\e[0Ksection_end:`date +%s`:${DATE}\r\e[0K"

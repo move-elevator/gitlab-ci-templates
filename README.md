@@ -10,6 +10,7 @@ Use `include` to reference template files:
 
 ```yaml
 include:
+   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yml'
    - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yml'
    - ... 
 ```

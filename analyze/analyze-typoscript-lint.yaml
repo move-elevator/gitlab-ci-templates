@@ -6,7 +6,7 @@
 #
 analyze:typoscript:lint:
   image:
-    name: composer:${BUILD_COMPOSER_VERSION}
+    name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
   stage: analyze
   needs: [ "build:php" ]
   script:

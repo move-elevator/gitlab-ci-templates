@@ -2,6 +2,7 @@
 # INCLUDES
 #-----------------------------------------------------------------------------------------------------------------------
 include:
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
@@ -15,17 +16,10 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
-# CONFIGURATION
+# CONFIGURATION (overrides)
 #-----------------------------------------------------------------------------------------------------------------------
 variables:
   BUILD_COMPOSER_VERSION: "2.8"
   BUILD_NODE_VERSION: "22"
-
-#-----------------------------------------------------------------------------------------------------------------------
-# STAGES
-#-----------------------------------------------------------------------------------------------------------------------
-stages:
-  - build
-  - analyze
 
 

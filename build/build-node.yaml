@@ -6,7 +6,7 @@
 #
 build:node:
   image:
-    name: node:${BUILD_NODE_VERSION}
+    name: ${DEFAULT_IMAGE_BUILD_NODE}
   stage: build
   cache:
     - key:
