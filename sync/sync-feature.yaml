@@ -12,7 +12,7 @@ sync:feature:
   script:
     - !reference [.check-deployment-dependencies, script]
     # upgrade db-sync-tool
-    - pip3 install --quiet --disable-pip-version-check --root-user-action=ignore --user --upgrade db-sync-tool-kmi file-sync-tool-kmi
+    - pip3 install --quiet --disable-pip-version-check --root-user-action=ignore --user --upgrade db-sync-tool-kmi file-sync-tool-kmi --break-system-packages
     # sync stage
     - vendor/bin/dep feature:sync $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
   rules:
