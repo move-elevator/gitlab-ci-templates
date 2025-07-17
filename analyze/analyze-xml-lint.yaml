@@ -8,7 +8,8 @@ analyze:xml:lint:
   image:
     name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
   stage: analyze
-  needs: [ "build:php" ]
+  needs:
+    - build:php
   script:
     - apt-get update -qq && apt-get install libxml2-utils -qq
     - composer run lint:xml
