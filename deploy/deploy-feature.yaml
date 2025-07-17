@@ -9,15 +9,15 @@ deploy:feature:
     - build:php
     - build:node
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
-    - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
-    - if: $CI_COMMIT_REF_NAME == "main"
-    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
       when: never
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - if: $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_TAG
       when: never
+    - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
+    - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
+    - if: $CI_COMMIT_REF_NAME == "main"
   resource_group: $CI_COMMIT_REF_NAME
   variables:
     DEPLOYER_CONFIG_FEATURE_BRANCH_HOST: stage
