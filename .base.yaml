@@ -73,6 +73,5 @@ stages:
   # needed for manual or scheduled jobs with expired artifacts
   - >
     if [ ! -d vendor ]; then
-      composer install --ignore-platform-reqs --optimize-autoloader --no-ansi
-      --no-interaction --no-progress --no-scripts --quiet;
+      composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet;
     fi
