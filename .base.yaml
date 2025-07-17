@@ -62,4 +62,4 @@ stages:
   script:
     # check if composer dependencies are actually available for the next steps
     # needed for manual or scheduled jobs with expired artifacts
-    - if [ ! -d ${PATH_CI_DIR}/vendor ]; then composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet -d ${PATH_CI_DIR}; fi
+    - if [ ! -d vendor ]; then composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet; fi
