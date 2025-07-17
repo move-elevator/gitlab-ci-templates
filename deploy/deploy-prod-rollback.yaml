@@ -1,0 +1,21 @@
+# Purpose:
+#   Rollback a last deployed release
+#
+deploy:prod:rollback:
+  extends:
+    - .ssh
+  stage: deploy.prod
+  needs:
+    - build:php
+    - build:node
+  variables:
+    SSH_USER: ${SSH_USER_PROD}
+    SSH_HOST: ${SSH_HOST_PROD}
+  script:
+    - vendor/bin/dep deploy:unlock prod $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+    - vendor/bin/dep rollback prod $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      when: manual
+    - when: never
+  allow_failure: false
