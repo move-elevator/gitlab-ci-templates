@@ -25,3 +25,6 @@ build:php:
       - vendor/
       - public/
     expire_in: 1 day
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      when: never
