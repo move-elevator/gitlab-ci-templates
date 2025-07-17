@@ -1,0 +1,21 @@
+# Purpose:
+#   Deploy an application on the production system
+#
+deploy:prod:
+  extends:
+    - .ssh
+  needs:
+    - build:php
+    - build:node
+  stage: deploy.prod
+  variables:
+    SSH_USER: ${SSH_USER_PROD}
+    SSH_HOST: ${SSH_HOST_PROD}
+  script:
+    - vendor/bin/dep deploy prod $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+    - vendor/bin/dep deploy:prod:notify prod
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      when: manual
+    - when: never
+  allow_failure: false

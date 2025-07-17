@@ -1,0 +1,16 @@
+# Purpose:
+#   Stop an existing feature branch instance on a staging system by calling a downstream pipeline on the main branch (Receiver)
+#
+deploy:feature:stop:downstream:
+  stage: deploy.feature
+  extends:
+    - .ssh
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
+    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+  script:
+    - vendor/bin/dep feature:stop stage --feature=$UPSTREAM_BRANCH $DEPLOYER_CONFIG_ADDITIONAL_OPTION

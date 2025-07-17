@@ -6,6 +6,13 @@ variables:
   BUILD_NODE_VERSION: "22"
   DEFAULT_IMAGE_BUILD_COMPOSER: "composer:${BUILD_COMPOSER_VERSION}"
   DEFAULT_IMAGE_BUILD_NODE: "node:${BUILD_NODE_VERSION}"
+  # Default host is stage - this is overridden in prod deployment
+  SSH_USER: ${SSH_USER_STAGE}
+  SSH_HOST: ${SSH_HOST_STAGE}
+  SSH_PORT_DEFAULT: 22
+  SSH_PORT: ${SSH_PORT_DEFAULT}
+  # Override this regex to match your feature branch naming convention within your project
+  FEATURE_BRANCH_NAME_REGEX: '^JIRA-.*$'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # STAGES
@@ -13,6 +20,8 @@ variables:
 stages:
   - build
   - analyze
+  - deploy.feature
+  - deploy.prod
 
 #-----------------------------------------------------------------------------------------------------------------------
 # SSH
