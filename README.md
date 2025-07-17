@@ -1,4 +1,8 @@
+<div align="center">
+
 # GitLab-CI Templates
+
+</div>
 
 This repository provides useful templates for reusable GitLab-CI jobs in [move:elevator](https://www.move-elevator.de/) projects. It is not meant to be used anywhere else.
 
