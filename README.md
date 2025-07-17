@@ -1,8 +1,8 @@
 # GitLab-CI Templates
 
-This repository provides useful templates for reusable GitLab-CI jobs.
+This repository provides useful templates for reusable GitLab-CI jobs in [move:elevator](https://www.move-elevator.de/) projects. It is not meant to be used anywhere else.
 
-## Installation
+## 🔥 Installation
 
 See [.gitlab-ci.yml.dist](.gitlab-ci.yml.dist) for an example GitLab-CI configuration.
 

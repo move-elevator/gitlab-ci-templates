@@ -1,0 +1,31 @@
+# Purpose:
+#   Sync manually a feature branch instance
+#
+sync:feature:
+  stage: sync
+  extends:
+    - .ssh
+  dependencies: [ ]
+  variables:
+    GIT_STRATEGY: fetch
+    DEPLOYER_CONFIG_FEATURE_BRANCH_HOST: stage
+  script:
+    - !reference [.check-deployment-dependencies, script]
+    # upgrade db-sync-tool
+    - pip3 install --quiet --disable-pip-version-check --root-user-action=ignore --user --upgrade db-sync-tool-kmi file-sync-tool-kmi
+    # sync stage
+    - vendor/bin/dep feature:sync $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
+    - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
+    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      when: never
+  resource_group: $CI_COMMIT_REF_NAME
+  environment:
+    name: $CI_COMMIT_REF_NAME
+    url: $ENVIRONMENT_URL

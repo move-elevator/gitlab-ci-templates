@@ -21,6 +21,7 @@ stages:
   - build
   - analyze
   - deploy.feature
+  - sync
   - deploy.prod
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -53,3 +54,12 @@ stages:
     - echo "${SSH_HOST}" >> /etc/hosts
     - echo -e "Host *\n\tStrictHostKeyChecking yes\n\tUserKnownHostsFile=~/.ssh/known_hosts\n\n" > ~/.ssh/config
     - echo -e "\e[0Ksection_end:`date +%s`:${DATE}\r\e[0K"
+
+#-----------------------------------------------------------------------------------------------------------------------
+# DEPLOYMENT DEPENDENCIES
+#-----------------------------------------------------------------------------------------------------------------------
+.check-deployment-dependencies:
+  script:
+    # check if composer dependencies are actually available for the next steps
+    # needed for manual or scheduled jobs with expired artifacts
+    - if [ ! -d ${PATH_CI_DIR}/vendor ]; then composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet -d ${PATH_CI_DIR}; fi

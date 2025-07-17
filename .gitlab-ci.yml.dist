@@ -19,6 +19,9 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-stop.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-stop-downstream.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod-rollback.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
