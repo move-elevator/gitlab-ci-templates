@@ -14,7 +14,7 @@ sync:feature:scheduled:
     # upgrade db-sync-tool
     - >
       pip3 install --quiet --disable-pip-version-check --root-user-action=ignore
-      --user --upgrade db-sync-tool-kmi file-sync-tool --break-system-packages
+      --user --upgrade db-sync-tool-kmi file-sync-tool-kmi --break-system-packages
     # sync stage
     - >
       vendor/bin/dep feature:sync $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST
