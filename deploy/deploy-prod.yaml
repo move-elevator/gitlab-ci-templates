@@ -15,8 +15,6 @@ deploy:prod:
     - vendor/bin/dep deploy prod $DEPLOYER_CONFIG_ADDITIONAL_OPTION
     - vendor/bin/dep deploy:prod:notify prod
   rules:
-    - if: $CI_PIPELINE_SOURCE == "pipeline"
-      when: never
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - if: $CI_COMMIT_REF_NAME == "main"

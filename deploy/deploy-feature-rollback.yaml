@@ -13,8 +13,6 @@ deploy:feature:rollback:
       when: never
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - if: $CI_PIPELINE_SOURCE == "pipeline"
-      when: never
     - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
     - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
     - if: $CI_COMMIT_REF_NAME == "main"
