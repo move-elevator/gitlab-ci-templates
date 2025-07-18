@@ -10,4 +10,5 @@ deploy:feature:stop:downstream:
       when: always
     - when: never
   script:
+    - !reference [.check-deployment-dependencies, script]
     - vendor/bin/dep feature:stop stage --feature=$UPSTREAM_BRANCH $DEPLOYER_CONFIG_ADDITIONAL_OPTION
