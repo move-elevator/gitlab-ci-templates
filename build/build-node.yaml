@@ -21,6 +21,10 @@ build:node:
     paths:
     expire_in: 1 day
   rules:
+    - if : $CI_PIPELINE_SOURCE == "web"
+      when: always
     - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
       when: never
     - when: always
