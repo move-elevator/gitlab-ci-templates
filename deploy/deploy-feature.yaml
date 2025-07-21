@@ -28,6 +28,6 @@ deploy:feature:
   environment:
     name: $CI_COMMIT_REF_NAME
     url: $ENVIRONMENT_URL
-    on_stop: deploy:feature:stop
+    on_stop: deploy:feature:cleanup
     auto_stop_in: 3 months
   allow_failure: false
