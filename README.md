@@ -69,11 +69,11 @@ The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https
 Includes:
 - `deploy/deploy-feature.yaml`
 - `deploy/deploy-feature-rollback.yaml`
-- `deploy/deploy-feature-stop.yaml`
-- `deploy/deploy-feature-downstream.yaml`
+- `deploy/deploy-feature-cleanup.yaml`
+- `deploy/deploy-feature-cleanup-downstream.yaml`
 
 > [!NOTE]
-> The cleanup of a feature branch is a little bit tricky. It may happen that the branch has been deleted, triggering the `deploy:feature:stop` job. However, since the application code in the branch is no longer available at this point and the cleanup logic and configuration are therefore no longer present, the cleanup is delegated to another branch (usually the `main` branch) via the downstream pipeline.
+> The cleanup of a feature branch is a little bit tricky. It may happen that the branch has been deleted, triggering the `deploy:feature:cleanup` job. However, since the application code in the branch is no longer available at this point and the cleanup logic and configuration are therefore no longer present, the cleanup is delegated to another branch (usually the `main` branch) via the downstream pipeline.
 
 ### Prod Deployment
 
