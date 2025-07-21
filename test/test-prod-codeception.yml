@@ -25,7 +25,7 @@ test:prod:codeception:
     - when: never
   variables:
     SELENIUM_HOST: 'selenium'
-    TESTING_DOMAIN: https://$HOST_PROD/
+    TESTING_DOMAIN: https://$DOMAIN_PROD/
   script:
     - !reference [.check-deployment-dependencies, script]
     - vendor/bin/codecept run --html --steps

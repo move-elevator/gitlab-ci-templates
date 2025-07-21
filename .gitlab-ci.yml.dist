@@ -38,7 +38,7 @@ variables:
   SSH_USER_PROD:
   SSH_HOST_PROD:
   # Test configuration
-  HOST_STAGE: 'stage.example.org'
-  HOST_PROD: 'example.org'
+  DOMAIN_STAGE: 'stage.example.org'
+  DOMAIN_PROD: 'example.org'
 
 

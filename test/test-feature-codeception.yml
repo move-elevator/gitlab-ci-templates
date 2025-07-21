@@ -27,7 +27,7 @@ test:feature:codeception:
     - if: $CI_COMMIT_REF_NAME == "main"
   variables:
     SELENIUM_HOST: 'selenium'
-    TESTING_DOMAIN: https://$HOST_STAGE/$CI_COMMIT_REF_NAME/
+    TESTING_DOMAIN: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
     - !reference [.check-deployment-dependencies, script]
     - vendor/bin/codecept run --html --steps
