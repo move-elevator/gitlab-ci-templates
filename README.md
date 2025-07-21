@@ -95,7 +95,11 @@ Includes:
 
 ### Testing
 
-ToDo
+Run acceptance tests using [Codeception](https://codeception.com/).
+
+Includes:
+- `test/test-feature-codeception.yaml`
+- `test/test-prod-codeception.yaml`
 
 
 ## ⭐ License

@@ -1,0 +1,38 @@
+# Purpose:
+#   Test a feature branch instance with codeception
+#
+# Dependency:
+#   Codeception
+#
+test:feature:codeception:
+  stage: test
+  image:
+    name: codeception/codeception
+    entrypoint: [ "" ]
+  services:
+    - name: selenium/standalone-chrome:latest
+      alias: selenium
+  needs:
+    - build:php
+    - build:node
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
+    - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
+    - if: $CI_COMMIT_REF_NAME == "main"
+  variables:
+    SELENIUM_HOST: 'selenium'
+    TESTING_DOMAIN: https://$HOST_STAGE/$CI_COMMIT_REF_NAME/
+  script:
+    - !reference [.check-deployment-dependencies, script]
+    - vendor/bin/codecept run --html --steps
+  artifacts:
+    when: always
+    paths:
+      - tests/Acceptance/_output/**
+    expire_in: 1 day

@@ -1,0 +1,36 @@
+# Purpose:
+#   Test prod with codeception
+#
+# Dependency:
+#   Codeception
+#
+test:prod:codeception:
+  stage: test.prod
+  image:
+    name: codeception/codeception
+    entrypoint: [ "" ]
+  services:
+    - name: selenium/standalone-chrome:latest
+      alias: selenium
+  needs:
+    - build:php
+    - build:node
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "main"
+      when: manual
+    - when: never
+  variables:
+    SELENIUM_HOST: 'selenium'
+    TESTING_DOMAIN: https://$HOST_PROD/
+  script:
+    - !reference [.check-deployment-dependencies, script]
+    - vendor/bin/codecept run --html --steps
+  artifacts:
+    when: always
+    paths:
+      - tests/Acceptance/_output/**
+    expire_in: 1 day
