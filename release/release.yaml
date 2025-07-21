@@ -1,0 +1,23 @@
+# Purpose:
+#   Create a release in GitLab using the release-cli.
+#   https://about.gitlab.com/blog/tutorial-automated-release-and-release-notes-with-gitlab/
+#
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: build:release-notes
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+  script:
+    - echo "Creating release"
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: release_notes.md
+    tag_name: '$CI_COMMIT_TAG'
+    ref: '$CI_COMMIT_SHA'
+    assets:
+      links:
+        - name: 'Container Image $CI_COMMIT_TAG'
+          url: "https://$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
