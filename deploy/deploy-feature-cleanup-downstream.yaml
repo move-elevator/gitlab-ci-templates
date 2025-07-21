@@ -1,7 +1,7 @@
 # Purpose:
-#   Stop an existing feature branch instance on a staging system by calling a downstream pipeline on the main branch (Receiver)
+#   Cleanup an existing feature branch instance on a staging system, called by a downstream pipeline on the main branch (Receiver)
 #
-deploy:feature:stop:downstream:
+deploy:feature:cleanup:downstream:
   stage: deploy.feature
   extends:
     - .ssh
