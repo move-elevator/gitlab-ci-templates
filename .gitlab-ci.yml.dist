@@ -22,6 +22,8 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod-rollback.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-feature-codeception.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
@@ -35,5 +37,8 @@ variables:
   SSH_HOST_STAGE:
   SSH_USER_PROD:
   SSH_HOST_PROD:
+  # Test configuration
+  DOMAIN_STAGE: 'stage.example.org'
+  DOMAIN_PROD: 'example.org'
 
 
