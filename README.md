@@ -62,7 +62,9 @@ Includes:
 
 ### Feature Branch Deployment
 
-Deploy feature branches to a dedicated environment.
+Deploy feature branches to a dedicated environment. 
+
+The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools) as deployment base.
 
 Includes:
 - `deploy/deploy-feature.yaml`
@@ -70,9 +72,14 @@ Includes:
 - `deploy/deploy-feature-stop.yaml`
 - `deploy/deploy-feature-downstream.yaml`
 
+> [!NOTE]
+> The cleanup of a feature branch is a little bit tricky. It may happen that the branch has been deleted, triggering the `deploy:feature:stop` job. However, since the application code in the branch is no longer available at this point and the cleanup logic and configuration are therefore no longer present, the cleanup is delegated to another branch (usually the `main` branch) via the downstream pipeline.
+
 ### Prod Deployment
 
 Deployment to production environment.
+
+The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools) as deployment base.
 
 Includes:
 - `deploy/deploy-prod.yaml`
