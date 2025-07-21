@@ -9,7 +9,12 @@ build:release-notes:
     - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
   script:
     - apk add curl jq
-    - 'curl -H "PRIVATE-TOKEN: $CI_API_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/changelog?version=$CI_COMMIT_TAG" | jq -r .notes > release_notes.md'
+    - >
+      curl --fail --show-error \
+        -H "PRIVATE-TOKEN: $CI_API_TOKEN" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/changelog?version=$CI_COMMIT_TAG" \
+      | jq -r '.notes // "⚠️  No release notes found."' \
+      > release_notes.md
   artifacts:
     paths:
       - release_notes.md
