@@ -22,4 +22,4 @@ deploy:prod:rollback:
     - if: $CI_COMMIT_REF_NAME == "main"
       when: manual
     - when: never
-  allow_failure: false
+  allow_failure: true

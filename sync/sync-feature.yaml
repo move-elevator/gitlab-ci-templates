@@ -36,3 +36,4 @@ sync:feature:
   environment:
     name: $CI_COMMIT_REF_NAME
     url: $ENVIRONMENT_URL
+  allow_failure: true

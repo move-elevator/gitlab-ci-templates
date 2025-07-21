@@ -13,8 +13,9 @@ deploy:feature:cleanup:
     - if: $CI_PIPELINE_SOURCE == "pipeline"
       when: never
     - if: $CI_COMMIT_REF_NAME =~ /$FEATURE_BRANCH_NAME_REGEX/
+      when: manual
     - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
-    - if: $CI_COMMIT_REF_NAME == "main"
+      when: manual
   variables:
     GIT_STRATEGY: none
     FEATURE_STOP_DOWNSTREAM_BRANCH: main
@@ -25,4 +26,4 @@ deploy:feature:cleanup:
     name: $CI_COMMIT_REF_NAME
     url: $ENVIRONMENT_URL
     action: stop
-  when: manual
+  allow_failure: true
