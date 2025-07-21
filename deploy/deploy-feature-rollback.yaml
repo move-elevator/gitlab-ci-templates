@@ -24,3 +24,4 @@ deploy:feature:rollback:
     - vendor/bin/dep deploy:unlock $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
     - vendor/bin/dep rollback $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST  --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
   when: manual
+  allow_failure: true
