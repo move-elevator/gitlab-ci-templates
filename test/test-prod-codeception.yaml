@@ -21,9 +21,10 @@ test:prod:codeception:
     TYPO3_BASEURL: https://$DOMAIN_PROD/
   script:
     - !reference [.check-deployment-dependencies, script]
+    - echo "Running Codeception tests on $TYPO3_BASEURL"
     - vendor/bin/codecept run --html --steps
   artifacts:
     when: always
     paths:
-      - tests/_output/**
+      report: tests/_output/report.html
     expire_in: 1 day
