@@ -6,12 +6,6 @@
 #
 test:feature:codeception:
   stage: test
-  image:
-    name: codeception/codeception
-    entrypoint: [ "" ]
-  services:
-    - name: selenium/standalone-chrome:latest
-      alias: selenium
   needs:
     - build:php
     - deploy:feature
@@ -26,8 +20,7 @@ test:feature:codeception:
     - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
     - if: $CI_COMMIT_REF_NAME == "main"
   variables:
-    SELENIUM_HOST: 'selenium-chrome'
-    TESTING_DOMAIN: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
+    TYPO3_BASEURL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
     - !reference [.check-deployment-dependencies, script]
     - vendor/bin/codecept run --html --steps
