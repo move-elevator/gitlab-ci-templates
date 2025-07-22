@@ -9,6 +9,7 @@ sync:feature:scheduled:
   variables:
     GIT_STRATEGY: fetch
     DEPLOYER_CONFIG_FEATURE_BRANCH_HOST: stage
+    DEPLOYER_CONFIG_FEATURE_SYNC_CONFIG: ".deployment/db-sync-tool/sync-prod-to-stage.yaml"
   script:
     - !reference [.check-deployment-dependencies, script]
     # upgrade db-sync-tool

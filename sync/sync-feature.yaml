@@ -32,6 +32,8 @@ sync:feature:
       when: manual
     - if: $CI_COMMIT_REF_NAME == "main"
       when: manual
+      variables:
+        DEPLOYER_CONFIG_FEATURE_SYNC_CONFIG: ".deployment/db-sync-tool/sync-prod-to-stage.yaml"
   resource_group: $CI_COMMIT_REF_NAME
   environment:
     name: $CI_COMMIT_REF_NAME
