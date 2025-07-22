@@ -14,7 +14,7 @@ test:feature:codeception:
       alias: selenium
   needs:
     - build:php
-    - build:node
+    - deploy:feature
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
@@ -26,7 +26,7 @@ test:feature:codeception:
     - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
     - if: $CI_COMMIT_REF_NAME == "main"
   variables:
-    SELENIUM_HOST: 'selenium'
+    SELENIUM_HOST: 'selenium-chrome'
     TESTING_DOMAIN: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
     - !reference [.check-deployment-dependencies, script]
