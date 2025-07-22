@@ -26,5 +26,5 @@ test:prod:codeception:
   artifacts:
     when: always
     paths:
-      report: tests/_output/report.html
+      - tests/_output/report.html
     expire_in: 1 day
