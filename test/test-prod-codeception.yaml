@@ -8,7 +8,7 @@ test:prod:codeception:
   stage: test.prod
   needs:
     - build:php
-    - deploy:feature
+    - deploy:prod
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
