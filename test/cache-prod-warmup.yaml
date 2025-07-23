@@ -4,7 +4,7 @@
 # Dependency:
 #   EXT:typo3-warming
 #
-cache:feature:warmup:
+cache:prod:warmup:
   stage: test.prod
   extends:
     - .ssh
