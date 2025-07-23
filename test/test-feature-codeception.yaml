@@ -7,8 +7,7 @@
 test:feature:codeception:
   stage: test
   needs:
-    - build:php
-    - deploy:feature
+    - cache:feature:warmup
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never

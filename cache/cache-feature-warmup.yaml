@@ -5,7 +5,7 @@
 #   EXT:typo3-warming
 #
 cache:feature:warmup:
-  stage: test
+  stage: cache
   extends:
     - .ssh
   needs:
