@@ -7,6 +7,7 @@
 test:prod:codeception:
   stage: test.prod
   needs:
+    - build:php
     - cache:prod:warmup
   rules:
     - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
