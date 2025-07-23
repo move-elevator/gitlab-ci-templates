@@ -5,7 +5,7 @@
 #   EXT:typo3-warming
 #
 cache:prod:warmup:
-  stage: test.prod
+  stage: cache.prod
   extends:
     - .ssh
   needs:
