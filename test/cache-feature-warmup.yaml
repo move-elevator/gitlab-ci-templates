@@ -25,5 +25,5 @@ cache:feature:warmup:
     TYPO3_BASEURL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
     - !reference [.check-deployment-dependencies, script]
-    - echo "\e[33mRunning cache warmup on $TYPO3_BASEURL\e[0m"
+    - echo -e "\e[33mRunning cache warmup on $TYPO3_BASEURL\e[0m"
     - vendor/bin/dep cache:warmup stage --feature=$CI_COMMIT_REF_NAME -v

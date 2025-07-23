@@ -25,5 +25,5 @@ cache:prod:warmup:
     TYPO3_BASEURL: https://$DOMAIN_PROD/
   script:
     - !reference [.check-deployment-dependencies, script]
-    - echo "\e[33mRunning cache warmup on $TYPO3_BASEURL\e[0m"
+    - echo -e "\e[33mRunning cache warmup on $TYPO3_BASEURL\e[0m"
     - vendor/bin/dep cache:warmup prod -v
