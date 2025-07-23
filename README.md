@@ -101,6 +101,13 @@ Includes:
 - `test/test-feature-codeception.yaml`
 - `test/test-prod-codeception.yaml`
 
+### Cache Warmup
+
+Warm up the cache after deployment using [EXT:typo3-warming](https://github.com/eliashaeussler/typo3-warming).
+
+Includes:
+- `test/cache-feature-warmup.yaml`
+- `test/cache-prod-warmup.yaml`
 
 ## ⭐ License
 

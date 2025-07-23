@@ -1,11 +1,13 @@
 # Purpose:
-#   Test prod with codeception
+#   Runs a cache warmup for the prod system
 #
 # Dependency:
-#   Codeception
+#   EXT:typo3-warming
 #
-test:prod:codeception:
+cache:feature:warmup:
   stage: test.prod
+  extends:
+    - .ssh
   needs:
     - build:php
     - deploy:prod
@@ -14,17 +16,14 @@ test:prod:codeception:
       when: never
     - if: $CI_PIPELINE_SOURCE == "pipeline"
       when: never
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: $CI_COMMIT_REF_NAME == "main"
-      when: manual
+      when: always
     - when: never
   variables:
     TYPO3_BASEURL: https://$DOMAIN_PROD/
   script:
     - !reference [.check-deployment-dependencies, script]
-    - echo "\e[33mRunning Codeception tests on $TYPO3_BASEURL\e[0m"
-    - vendor/bin/codecept run --html --steps
-  artifacts:
-    when: always
-    paths:
-      - tests/_output/report.html
-    expire_in: 1 day
+    - echo "\e[33mRunning cache warmup on $TYPO3_BASEURL\e[0m"
+    - vendor/bin/dep cache:warmup prod -v
