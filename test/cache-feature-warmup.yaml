@@ -12,15 +12,11 @@ cache:feature:warmup:
     - build:php
     - deploy:feature
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_PIPELINE_SOURCE == "pipeline"
-      when: never
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: $CI_COMMIT_REF_NAME =~ /^[A-Z]{2,}-\d+-.*$/
-    - if: $CI_COMMIT_REF_NAME =~ /^feature-.*$/
-    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*)$/
+      when: always
+    - when: never
   variables:
     TYPO3_BASEURL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
