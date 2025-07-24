@@ -19,6 +19,7 @@ build:node:
     - npm run build
   artifacts:
     paths:
+      - node_modules/
     expire_in: 1 day
   rules:
     - if: $CI_PIPELINE_SOURCE == "web"

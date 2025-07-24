@@ -10,6 +10,12 @@ analyze:js:lint:
   stage: analyze
   needs:
     - build:node
+  dependencies:
+    - build:node
+  artifacts:
+    reports: { }
+    paths:
+      - node_modules/
   script:
     - npm run lint:js
   rules:
