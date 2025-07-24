@@ -7,10 +7,12 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-editorconfig.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-js-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-cs-fixer.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-stan.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-rector.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-style-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-yaml-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
@@ -24,8 +26,8 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-feature-codeception.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/cache-feature-warmup.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/cache-prod-warmup.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)

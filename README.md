@@ -50,9 +50,11 @@ Analyze code quality and static analysis.
 Includes:
 - `analyze/analyze-composer-lint.yaml`
 - `analyze/analyze-editorconfig.yaml`
+- `analyze/analyze-js-lint.yaml`
 - `analyze/analyze-php-cs-fixer.yaml`
 - `analyze/analyze-php-rector.yaml`
 - `analyze/analyze-php-stan.yaml`
+- `analyze/analyze-style-lint.yaml`
 - `analyze/analyze-typoscript-lint.yaml`
 - `analyze/analyze-xml-lint.yaml`
 - `analyze/analyze-yaml-lint.yaml`
@@ -106,8 +108,8 @@ Includes:
 Warm up the cache after deployment using [EXT:typo3-warming](https://github.com/eliashaeussler/typo3-warming).
 
 Includes:
-- `test/cache-feature-warmup.yaml`
-- `test/cache-prod-warmup.yaml`
+- `cache/cache-feature-warmup.yaml`
+- `cache/cache-prod-warmup.yaml`
 
 ## ⭐ License
 
