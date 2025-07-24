@@ -26,8 +26,8 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-feature-codeception.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/cache-feature-warmup.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/cache-prod-warmup.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
