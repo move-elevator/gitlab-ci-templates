@@ -85,7 +85,7 @@ The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https
 
 Includes:
 - `deploy/deploy-prod.yaml`
-- `deploy/deploy-prod-rollback.yaml`'
+- `deploy/deploy-prod-rollback.yaml`
 
 ### Release
 
@@ -93,7 +93,7 @@ Create a GitLab release with release notes.
 
 Includes:
 - `build/build-release-notes.yaml`
-- `release/release.yaml`'
+- `release/release.yaml`
 
 ### Testing
 
