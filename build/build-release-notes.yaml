@@ -18,3 +18,4 @@ build:release-notes:
   artifacts:
     paths:
       - release_notes.md
+    expire_in: 1 day
