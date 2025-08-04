@@ -16,6 +16,7 @@ analyze:style:lint:
     reports: { }
     paths:
       - node_modules/
+    expire_in: 1 day
   script:
     - npm run lint:style
   rules:
