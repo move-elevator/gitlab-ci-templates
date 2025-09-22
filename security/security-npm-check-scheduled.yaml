@@ -5,7 +5,7 @@
 #   Deployer task "security:check:npm"
 #
 security:npm:check:scheduled:
-  stage: analyse
+  stage: security
   dependencies: [ ]
   cache:
     key: security-$CI_JOB_NAME-$CI_COMMIT_REF_NAME
