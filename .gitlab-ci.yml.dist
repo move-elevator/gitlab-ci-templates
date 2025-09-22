@@ -28,6 +28,8 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yamll'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
@@ -35,7 +37,6 @@ include:
 variables:
   BUILD_COMPOSER_VERSION: "2.8"
   BUILD_NODE_VERSION: "22"
-  FEATURE_BRANCH_NAME_REGEX: '^JIRA-.*$'
   # SSH configuration
   SSH_USER_STAGE:
   SSH_HOST_STAGE:
