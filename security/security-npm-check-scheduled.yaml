@@ -6,8 +6,6 @@
 #
 security:npm:check:scheduled:
   stage: analyse
-  extends:
-    - .base-schedule
   dependencies: [ ]
   cache:
     key: security-$CI_JOB_NAME-$CI_COMMIT_REF_NAME
