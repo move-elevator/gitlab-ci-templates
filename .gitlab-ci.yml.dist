@@ -29,7 +29,7 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yamll'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
