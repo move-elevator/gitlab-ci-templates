@@ -111,6 +111,17 @@ Includes:
 - `cache/cache-feature-warmup.yaml`
 - `cache/cache-prod-warmup.yaml`
 
+### Security
+
+Run security checks using `audit` tools.
+
+Includes:
+- `security/security-composer-check-scheduled.yaml`
+- `security/security-npm-check-scheduled.yaml`
+
+> [!NOTE]
+> Needs to be scheduled in GitLab-CI.
+
 ## ⭐ License
 
 This project is licensed under [GNU General Public License 3.0 (or later)](LICENSE).
