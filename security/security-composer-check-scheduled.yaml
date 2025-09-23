@@ -5,6 +5,8 @@
 #   Deployer task "security:check:composer"
 #
 security:composer:check:scheduled:
+  image:
+    name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
   stage: security
   dependencies: [ ]
   cache:

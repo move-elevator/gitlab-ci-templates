@@ -5,6 +5,8 @@
 #   Deployer task "security:check:npm"
 #
 security:npm:check:scheduled:
+  image:
+    name: ${DEFAULT_IMAGE_BUILD_NODE}
   stage: security
   dependencies: [ ]
   cache:
