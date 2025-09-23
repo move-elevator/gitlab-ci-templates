@@ -122,6 +122,10 @@ Includes:
 > [!NOTE]
 > Needs to be scheduled in GitLab-CI.
 
+> [!IMPORTANT]
+> A pipeline schedule needs to have set the variable `SCHEDULE_TASK_NAME` to the desired task, e.g. `security:composer:check:scheduled` or `security:npm:check:scheduled`.
+> This is a workaround (see according rules) to address specific jobs in a scheduled pipeline.
+
 ## ⭐ License
 
 This project is licensed under [GNU General Public License 3.0 (or later)](LICENSE).
