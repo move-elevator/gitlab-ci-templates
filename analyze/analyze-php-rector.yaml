@@ -4,7 +4,7 @@
 # Dependency:
 #   Composer package "rector/rector" and a composer script "lint:php:rector"
 #
-analyze:php:stan:
+analyze:php:rector:
   image:
     name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
   stage: analyze
