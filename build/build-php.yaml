@@ -24,6 +24,7 @@ build:php:
     paths:
       - vendor/
       - public/
+      - var/labels/
     expire_in: 1 day
   rules:
     - if: $CI_PIPELINE_SOURCE == "web"
