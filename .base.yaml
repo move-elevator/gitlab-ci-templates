@@ -52,10 +52,14 @@ stages:
     ## Create the SSH directory and give it the right permissions
     - mkdir -p ~/.ssh
     ## Add the SSH key stored in SSH_KEY variable to the agent store
-    ## We're using tr to fix line endings which makes ed25519 keys work
-    ## without extra base64 encoding.
-    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
-    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+    ## Supports both "File" type (recommended) and "Variable" type CI/CD variables
+    - >
+      if [ -f "$SSH_KEY" ]; then
+        chmod 400 "$SSH_KEY";
+        ssh-add "$SSH_KEY";
+      else
+        echo "$SSH_KEY" | tr -d '\r' | ssh-add -;
+      fi
     - touch ~/.ssh/config
     - chmod 700 -R ~/.ssh
     ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
