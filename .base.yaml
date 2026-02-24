@@ -14,8 +14,8 @@ variables:
   # Default host is stage - this is overridden in prod deployment
   SSH_USER: ${SSH_USER_STAGE}
   SSH_HOST: ${SSH_HOST_STAGE}
-  SSH_PORT_DEFAULT: 22
-  SSH_PORT: ${SSH_PORT_DEFAULT}
+  SSH_PORT_STAGE: 22
+  SSH_PORT: ${SSH_PORT_STAGE}
 
 #-----------------------------------------------------------------------------------------------------------------------
 # STAGES
@@ -58,7 +58,10 @@ stages:
         chmod 400 "$SSH_KEY";
         ssh-add "$SSH_KEY";
       else
-        echo "$SSH_KEY" | tr -d '\r' | ssh-add -;
+        echo "$SSH_KEY" | tr -d '\r' > /tmp/ssh_key;
+        chmod 400 /tmp/ssh_key;
+        ssh-add /tmp/ssh_key;
+        rm -f /tmp/ssh_key;
       fi
     - touch ~/.ssh/config
     - chmod 700 -R ~/.ssh
@@ -68,7 +71,10 @@ stages:
     ## add all SSH_HOST variables to known_hosts file
     - >
       printenv | grep ^SSH_HOST | while read line; do
-        ssh-keyscan -p ${SSH_PORT} ${line##*=} >> ~/.ssh/known_hosts;
+        host="${line##*=}";
+        if [ -n "$host" ]; then
+          ssh-keyscan -p ${SSH_PORT} "$host" >> ~/.ssh/known_hosts;
+        fi;
       done
     - echo "${SSH_HOST}" >> /etc/hosts
     - >
