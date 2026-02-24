@@ -97,11 +97,24 @@ Includes:
 
 ### Testing
 
+#### Codeception
+
 Run acceptance tests using [Codeception](https://codeception.com/).
 
 Includes:
 - `test/test-feature-codeception.yaml`
 - `test/test-prod-codeception.yaml`
+
+#### jetbrains HTTP Client
+
+Run tests using [JetBrains HTTP Client](https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html).
+
+Includes:
+- `test/test-feature-http-client.yaml`
+- `test/test-prod-http-client.yaml`
+
+> [!NOTE]
+> Adjust the environment variables `HTTP_CLIENT_*` to your needs.
 
 ### Cache Warmup
 
