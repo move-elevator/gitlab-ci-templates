@@ -1,26 +1,39 @@
 # Purpose:
-#   Test a feature branch instance with jetbrains http tests
+#   Test a feature branch instance with jetbrains http client tests
 #
-test:feature:http:
+test:feature:http-client:
   stage: test
-  image: jetbrains/intellij-http-client
+  image: eclipse-temurin:17-jre
   needs:
     - deploy:feature
   rules:
     - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*)$/
+  cache:
+    key: ijhttp-latest
+    paths:
+      - ijhttp/
   variables:
-    HTTP_TEST_DIR: tests/http
-    HTTP_ENV_FILE: http-client.env.json
-    HTTP_ENV: staging
-    HTTP_BASE_PATH: _api
-    HTTP_BASE_URL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
+    HTTP_CLIENT_TEST_DIR: tests/http
+    HTTP_CLIENT_ENV_FILE: ${HTTP_TEST_DIR}/http-client.env.json
+    HTTP_CLIENT_ENV: staging
+    HTTP_CLIENT_BASE_PATH: _api
+    HTTP_CLIENT_BASE_URL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
+  before_script:
+    # Currently the jetbrains/http-client docker image throws an error
+    # "Unknown option: '-c'"
+    # So we manually install the ijhttp binary here
+    - apt-get update && apt-get install -y unzip
+    - if [ ! -f ijhttp/ijhttp ]; then
+      curl -f -L -o ijhttp.zip "https://jb.gg/ijhttp/latest" &&
+      unzip -qq ijhttp.zip;
+      fi
   script:
     - echo -e "\e[33mRunning http tests on $HTTP_BASE_URL$HTTP_BASE_PATH\e[0m"
     - |
       for file in ${HTTP_TEST_DIR}/*.http; do
-        ijhttp "$file" \
+        ./ijhttp/ijhttp $file \
           --env="${HTTP_ENV}" \
           --env-file="${HTTP_ENV_FILE}" \
           --insecure \
