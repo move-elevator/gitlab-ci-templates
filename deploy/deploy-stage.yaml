@@ -1,0 +1,25 @@
+# Purpose:
+#   Deploy an application on the stage system
+#
+deploy:stage:
+  extends:
+    - .ssh
+  needs:
+    - build:php
+    - build:node
+  stage: deploy
+  variables:
+    SSH_USER: ${SSH_USER_STAGE}
+    SSH_HOST: ${SSH_HOST_STAGE}
+    STAGE_TARGET_BRANCH: main
+  script:
+    - vendor/bin/dep deploy stage $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == $STAGE_TARGET_BRANCH
+      when: always
+    - when: never
+  allow_failure: false
