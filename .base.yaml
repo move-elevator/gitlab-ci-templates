@@ -24,6 +24,7 @@ stages:
   - build
   - analyze
   - deploy.feature
+  - deploy.stage
   - sync
   - cache
   - test
@@ -73,7 +74,7 @@ stages:
       printenv | grep ^SSH_HOST | while read line; do
         host="${line##*=}";
         if [ -n "$host" ]; then
-          ssh-keyscan -p ${SSH_PORT} "$host" >> ~/.ssh/known_hosts;
+          ssh-keyscan -p ${SSH_PORT} "$host" >> ~/.ssh/known_hosts || true;
         fi;
       done
     - echo "${SSH_HOST}" >> /etc/hosts
