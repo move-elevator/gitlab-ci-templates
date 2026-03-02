@@ -7,7 +7,7 @@ deploy:stage:
   needs:
     - build:php
     - build:node
-  stage: deploy
+  stage: deploy.stage
   variables:
     SSH_USER: ${SSH_USER_STAGE}
     SSH_HOST: ${SSH_HOST_STAGE}
