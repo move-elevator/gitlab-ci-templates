@@ -87,6 +87,18 @@ Includes:
 - `deploy/deploy-prod.yaml`
 - `deploy/deploy-prod-rollback.yaml`
 
+### Stage Deployment
+
+Deployment to staging environment.
+
+The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools) as deployment base.
+
+Includes:
+- `deploy/deploy-stage.yaml`
+
+> [!NOTE]
+> Use this template if the project wants a simple stage deployment and doesn't need an advanced feature branch deployment. 
+
 ### Release
 
 Create a GitLab release with release notes.
