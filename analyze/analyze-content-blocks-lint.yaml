@@ -1,0 +1,22 @@
+# Purpose:
+#   Analyze job for simply linting all content block config files
+#
+# Dependency:
+#   Composer package "friendsoftypo3/content-blocks" and a composer script "lint:content-blocks"
+#
+analyze:content-blocks:lint:
+  image:
+    name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
+  stage: analyze
+  needs:
+    - build:php
+  script:
+    - composer run lint:content-blocks
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_TAG == null
+      changes:
+        - "**/ContentBlocks/**/*.yaml"
