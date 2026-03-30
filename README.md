@@ -19,7 +19,7 @@ Use `include` to reference template files:
 include:
    - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yml'
    - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yml'
-   - ... 
+   - ...
 ```
 
 Extend and override configuration variables, see [.base.yaml](.base.yaml) for predefined variables.
@@ -49,6 +49,7 @@ Analyze code quality and static analysis.
 
 Includes:
 - `analyze/analyze-composer-lint.yaml`
+- `analyze/analyze-content-blocks-lint.yaml`
 - `analyze/analyze-editorconfig.yaml`
 - `analyze/analyze-js-lint.yaml`
 - `analyze/analyze-php-cs-fixer.yaml`
@@ -64,7 +65,7 @@ Includes:
 
 ### Feature Branch Deployment
 
-Deploy feature branches to a dedicated environment. 
+Deploy feature branches to a dedicated environment.
 
 The deployment uses [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools) as deployment base.
 
@@ -97,7 +98,7 @@ Includes:
 - `deploy/deploy-stage.yaml`
 
 > [!NOTE]
-> Use this template if the project wants a simple stage deployment and doesn't need an advanced feature branch deployment. 
+> Use this template if the project wants a simple stage deployment and doesn't need an advanced feature branch deployment.
 
 ### Release
 
