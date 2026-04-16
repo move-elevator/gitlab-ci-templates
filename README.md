@@ -88,6 +88,9 @@ Includes:
 - `deploy/deploy-prod.yaml`
 - `deploy/deploy-prod-rollback.yaml`
 
+> [!IMPORTANT]
+> Production deployments are restricted to semver-tagged versions only (e.g. `v1.2.3` or `1.2.3`).
+
 ### Stage Deployment
 
 Deployment to staging environment.
