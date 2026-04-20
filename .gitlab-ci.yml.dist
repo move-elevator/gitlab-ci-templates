@@ -7,6 +7,7 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-editorconfig.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-fluid-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-js-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-cs-fixer.yaml'
