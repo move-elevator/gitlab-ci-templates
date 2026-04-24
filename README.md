@@ -51,6 +51,7 @@ Includes:
 - `analyze/analyze-composer-lint.yaml`
 - `analyze/analyze-content-blocks-lint.yaml`
 - `analyze/analyze-editorconfig.yaml`
+- `analyze/analyze-fluid-lint.yaml`
 - `analyze/analyze-js-lint.yaml`
 - `analyze/analyze-php-cs-fixer.yaml`
 - `analyze/analyze-php-rector.yaml`
