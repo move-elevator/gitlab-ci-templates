@@ -4,6 +4,10 @@
 # Dependency:
 #   Composer package "friendsoftypo3/content-blocks" and a composer script "lint:content-blocks"
 #
+# Note:
+#   TYPO3 <14 requires an active database connection for the lint command.
+#   Make sure a database service is available in the CI job when using TYPO3 <14.
+#
 analyze:content-blocks:lint:
   image:
     name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
