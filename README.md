@@ -49,7 +49,7 @@ Analyze code quality and static analysis.
 
 Includes:
 - `analyze/analyze-composer-lint.yaml`
-- `analyze/analyze-content-blocks-lint.yaml`
+- `analyze/analyze-content-blocks-lint.yaml` (**Note:** TYPO3 <14 requires an active database connection for the lint command)
 - `analyze/analyze-editorconfig.yaml`
 - `analyze/analyze-fluid-lint.yaml`
 - `analyze/analyze-js-lint.yaml`
