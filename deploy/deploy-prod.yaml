@@ -11,6 +11,7 @@ deploy:prod:
   variables:
     SSH_USER: ${SSH_USER_PROD}
     SSH_HOST: ${SSH_HOST_PROD}
+    SSH_PORT: ${SSH_PORT_PROD}
   script:
     - vendor/bin/dep deploy prod $DEPLOYER_CONFIG_ADDITIONAL_OPTION
     - vendor/bin/dep deploy:prod:notify prod
