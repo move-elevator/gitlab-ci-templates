@@ -11,6 +11,7 @@ deploy:stage:
   variables:
     SSH_USER: ${SSH_USER_STAGE}
     SSH_HOST: ${SSH_HOST_STAGE}
+    SSH_PORT: ${SSH_PORT_STAGE}
     STAGE_TARGET_BRANCH: main
   script:
     - vendor/bin/dep deploy stage $DEPLOYER_CONFIG_ADDITIONAL_OPTION
