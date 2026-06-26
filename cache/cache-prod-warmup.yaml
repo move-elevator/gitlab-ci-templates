@@ -18,6 +18,9 @@ cache:prod:warmup:
       when: always
     - when: never
   variables:
+    SSH_USER: ${SSH_USER_PROD}
+    SSH_HOST: ${SSH_HOST_PROD}
+    SSH_PORT: ${SSH_PORT_PROD}
     TYPO3_BASEURL: https://$DOMAIN_PROD/
   script:
     - !reference [.check-deployment-dependencies, script]
