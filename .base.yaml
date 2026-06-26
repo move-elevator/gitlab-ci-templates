@@ -15,6 +15,7 @@ variables:
   SSH_USER: ${SSH_USER_STAGE}
   SSH_HOST: ${SSH_HOST_STAGE}
   SSH_PORT_STAGE: 22
+  SSH_PORT_PROD: 22
   SSH_PORT: ${SSH_PORT_STAGE}
 
 #-----------------------------------------------------------------------------------------------------------------------
