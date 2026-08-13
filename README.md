@@ -145,7 +145,7 @@ The SBOM is stored as job artifact and published to the project's Generic Packag
 Includes:
 - `security/security-sbom.yaml`
 
-Runs on semantic version tags and manually on the default branch. Published as `packages/generic/sbom/<version>/sbom.cdx.json`, where `<version>` is the tag without a leading `v` or `0.0.0-<short-sha>` for untagged builds.
+Runs on semantic version tags only, matching the prod deployment. Published as `packages/generic/sbom/<version>/sbom.cdx.json`, where `<version>` is the tag without a leading `v`.
 
 > [!IMPORTANT]
 > Technical documentation has to be kept for the declared support period. Make sure the project has no cleanup policy that removes generic packages.

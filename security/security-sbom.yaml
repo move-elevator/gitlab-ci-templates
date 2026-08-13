@@ -28,14 +28,8 @@ security:sbom:
     SBOM_PACKAGE_NAME: "sbom"
   script:
     - command -v curl > /dev/null 2>&1 || apk add --no-cache curl
-    ## Version for the package registry, which only accepts semantic versions:
-    ## tags may carry a leading "v" and a commit sha is no valid version on its own
-    - >
-      if [ -n "$CI_COMMIT_TAG" ]; then
-        SBOM_VERSION="${CI_COMMIT_TAG#v}";
-      else
-        SBOM_VERSION="0.0.0-${CI_COMMIT_SHORT_SHA}";
-      fi
+    ## The package registry only accepts semantic versions, tags may carry a leading "v"
+    - SBOM_VERSION="${CI_COMMIT_TAG#v}"
     ## Scan the lock files only, vendor/ and node_modules/ are excluded to avoid
     ## duplicate components and to keep the result reproducible
     - >
@@ -54,15 +48,6 @@ security:sbom:
     paths:
       - ${SBOM_FILE}
     expire_in: 1 year
+  ## Only released versions are documented, which matches the prod deployment being tag gated
   rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
-    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
-      when: always
-    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    ## Projects without release tags: manual SBOM on the default branch
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-      allow_failure: true
-    - when: never
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
