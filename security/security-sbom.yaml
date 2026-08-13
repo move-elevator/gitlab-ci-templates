@@ -8,37 +8,50 @@
 #
 # Notes:
 #   - Both ecosystems are covered by a single syft run, no separate node job is needed.
+#   - The official syft images are built from scratch and provide no shell, so syft is
+#     installed from its release archive. SBOM_SYFT_VERSION is the reproducibility anchor.
+#   - Only the two lock file catalogers are enabled, which keeps the result deterministic
+#     and independent of syft's default cataloger selection.
+#   - Dev dependencies are excluded by syft for both ecosystems, so the SBOM describes the
+#     shipped application rather than the build toolchain.
 #   - The package registry copy is the durable one, the artifact is only for convenience.
 #     Technical documentation has to be kept for the declared support period (up to 10 years),
 #     so make sure no cleanup policy removes generic packages.
-#   - syft reads the lock files, so the SBOM lists all locked packages. If the deployed
-#     application excludes dev dependencies, the SBOM has to be narrowed down accordingly.
 #
 security:sbom:
   image:
-    name: ${SBOM_SYFT_IMAGE}
-    entrypoint: [ "" ]
+    name: alpine:latest
   stage: security
   dependencies: [ ]
   variables:
     GIT_STRATEGY: fetch
-    # Pin to a fixed version once the pilot projects have verified the output
-    SBOM_SYFT_IMAGE: "anchore/syft:latest"
+    SBOM_SYFT_VERSION: "1.51.0"
     SBOM_FILE: "sbom.cdx.json"
     SBOM_PACKAGE_NAME: "sbom"
+    ## Pinned deliberately, 1.6 is supported more widely by scanners than syft's default
+    SBOM_CYCLONEDX_SPEC: "1.6"
   script:
     - command -v curl > /dev/null 2>&1 || apk add --no-cache curl
+    - >
+      case "$(uname -m)" in
+        x86_64) SYFT_ARCH=amd64 ;;
+        aarch64) SYFT_ARCH=arm64 ;;
+        *) echo "Unsupported architecture $(uname -m)"; exit 1 ;;
+      esac
+    - >
+      curl --fail --show-error --silent --location
+      "https://github.com/anchore/syft/releases/download/v${SBOM_SYFT_VERSION}/syft_${SBOM_SYFT_VERSION}_linux_${SYFT_ARCH}.tar.gz"
+      | tar -xz -C /usr/local/bin syft
     ## The package registry only accepts semantic versions, tags may carry a leading "v"
     - SBOM_VERSION="${CI_COMMIT_TAG#v}"
-    ## Scan the lock files only, vendor/ and node_modules/ are excluded to avoid
-    ## duplicate components and to keep the result reproducible
     - >
       syft scan dir:.
+      --override-default-catalogers 'php-composer-lock-cataloger,javascript-lock-cataloger'
       --exclude './vendor'
       --exclude './node_modules'
       --source-name "${CI_PROJECT_PATH}"
       --source-version "${SBOM_VERSION}"
-      --output "cyclonedx-json=${SBOM_FILE}"
+      --output "cyclonedx-json@${SBOM_CYCLONEDX_SPEC}=${SBOM_FILE}"
     - >
       curl --fail --show-error --silent
       --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
