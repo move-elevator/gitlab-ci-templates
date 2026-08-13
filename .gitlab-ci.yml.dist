@@ -31,6 +31,7 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
