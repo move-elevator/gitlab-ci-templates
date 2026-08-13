@@ -139,6 +139,17 @@ Includes:
 > [!NOTE]
 > Needs to be scheduled in GitLab-CI.
 
+Generate a CycloneDX SBOM (Software Bill of Materials) of all locked composer and npm dependencies using [syft](https://github.com/anchore/syft).
+The SBOM is stored as job artifact and published to the project's Generic Package Registry, which serves as technical documentation in terms of the Cyber Resilience Act (CRA).
+
+Includes:
+- `security/security-sbom.yaml`
+
+Runs on semantic version tags and manually on the default branch. Published as `packages/generic/sbom/<version>/sbom.cdx.json`, where `<version>` is the tag without a leading `v` or `0.0.0-<short-sha>` for untagged builds.
+
+> [!IMPORTANT]
+> Technical documentation has to be kept for the declared support period. Make sure the project has no cleanup policy that removes generic packages.
+
 > [!IMPORTANT]
 > A pipeline schedule needs to have set the variable `SCHEDULE_TASK_NAME` to the desired task, e.g. `security:composer:check:scheduled` or `security:npm:check:scheduled`.
 > This is a workaround (see according rules) to address specific jobs in a scheduled pipeline.
