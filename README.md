@@ -137,7 +137,7 @@ Includes:
 - `security/security-npm-check-scheduled.yaml`
 
 > [!NOTE]
-> Needs to be scheduled in GitLab-CI.
+> The `*:scheduled` jobs above need to be scheduled in GitLab-CI.
 
 > [!IMPORTANT]
 > A pipeline schedule needs to have set the variable `SCHEDULE_TASK_NAME` to the desired task, e.g. `security:composer:check:scheduled` or `security:npm:check:scheduled`.
