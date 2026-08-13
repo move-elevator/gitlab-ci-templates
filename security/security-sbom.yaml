@@ -1,0 +1,68 @@
+# Purpose:
+#   Generate a CycloneDX SBOM (Software Bill of Materials) for the application dependencies
+#   and publish it to the project's Generic Package Registry.
+#   Serves as technical documentation in terms of the Cyber Resilience Act (CRA).
+#
+# Dependency:
+#   composer.lock and/or package-lock.json in the repository root
+#
+# Notes:
+#   - Both ecosystems are covered by a single syft run, no separate node job is needed.
+#   - The package registry copy is the durable one, the artifact is only for convenience.
+#     Technical documentation has to be kept for the declared support period (up to 10 years),
+#     so make sure no cleanup policy removes generic packages.
+#   - syft reads the lock files, so the SBOM lists all locked packages. If the deployed
+#     application excludes dev dependencies, the SBOM has to be narrowed down accordingly.
+#
+security:sbom:
+  image:
+    name: ${SBOM_SYFT_IMAGE}
+    entrypoint: [ "" ]
+  stage: security
+  dependencies: [ ]
+  variables:
+    GIT_STRATEGY: fetch
+    # Pin to a fixed version once the pilot projects have verified the output
+    SBOM_SYFT_IMAGE: "anchore/syft:latest"
+    SBOM_FILE: "sbom.cdx.json"
+    SBOM_PACKAGE_NAME: "sbom"
+  script:
+    - command -v curl > /dev/null 2>&1 || apk add --no-cache curl
+    ## Version for the package registry, which only accepts semantic versions:
+    ## tags may carry a leading "v" and a commit sha is no valid version on its own
+    - >
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        SBOM_VERSION="${CI_COMMIT_TAG#v}";
+      else
+        SBOM_VERSION="0.0.0-${CI_COMMIT_SHORT_SHA}";
+      fi
+    ## Scan the lock files only, vendor/ and node_modules/ are excluded to avoid
+    ## duplicate components and to keep the result reproducible
+    - >
+      syft scan dir:.
+      --exclude './vendor'
+      --exclude './node_modules'
+      --source-name "${CI_PROJECT_PATH}"
+      --source-version "${SBOM_VERSION}"
+      --output "cyclonedx-json=${SBOM_FILE}"
+    - >
+      curl --fail --show-error --silent
+      --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
+      --upload-file "${SBOM_FILE}"
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${SBOM_PACKAGE_NAME}/${SBOM_VERSION}/${SBOM_FILE}"
+  artifacts:
+    paths:
+      - ${SBOM_FILE}
+    expire_in: 1 year
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+      when: always
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    ## Projects without release tags: manual SBOM on the default branch
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
+    - when: never
