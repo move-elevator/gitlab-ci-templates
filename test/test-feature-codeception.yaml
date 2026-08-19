@@ -12,11 +12,11 @@ test:feature:codeception:
   rules:
     - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*)$/
-  variables:
-    TYPO3_BASEURL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
+    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
   script:
     - !reference [.check-deployment-dependencies, script]
+    - !reference [.normalize-feature-name, script]
+    - TYPO3_BASEURL="https://$DOMAIN_STAGE/${FEATURE_NAME}/"
     - echo -e "\e[33mRunning Codeception tests on $TYPO3_BASEURL\e[0m"
     - vendor/bin/codecept run --html --steps
   artifacts:

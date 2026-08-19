@@ -9,14 +9,15 @@ test:feature:http:
   rules:
     - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*)$/
+    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
   variables:
     HTTP_TEST_DIR: tests/http
     HTTP_ENV_FILE: http-client.env.json
     HTTP_ENV: staging
     HTTP_BASE_PATH: _api
-    HTTP_BASE_URL: https://$DOMAIN_STAGE/$CI_COMMIT_REF_NAME/
   script:
+    - !reference [.normalize-feature-name, script]
+    - HTTP_BASE_URL="https://$DOMAIN_STAGE/${FEATURE_NAME}/"
     - echo -e "\e[33mRunning http tests on $HTTP_BASE_URL$HTTP_BASE_PATH\e[0m"
     - |
       for file in ${HTTP_TEST_DIR}/*.http; do
