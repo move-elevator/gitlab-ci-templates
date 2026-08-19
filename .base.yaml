@@ -96,3 +96,12 @@ stages:
     if [ ! -d vendor ]; then
       composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet;
     fi
+
+#-----------------------------------------------------------------------------------------------------------------------
+# FEATURE NAME
+#-----------------------------------------------------------------------------------------------------------------------
+.normalize-feature-name:
+  script:
+  # branch names may contain slashes (e.g. feature/ABC-12), deployer-tools flattens them
+  # to a hyphen for the actual instance path, mirror that here to build matching URLs
+  - FEATURE_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-')

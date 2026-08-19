@@ -8,7 +8,7 @@ deploy:feature:cleanup:
   rules:
     - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_REF_NAME =~ /^(feature-.*|[A-Z]{2,}-\d+-.*)$/
+    - if: $CI_COMMIT_REF_NAME =~ /^(feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
       when: manual
   variables:
     GIT_STRATEGY: none
