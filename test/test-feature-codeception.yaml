@@ -16,7 +16,7 @@ test:feature:codeception:
   script:
     - !reference [.check-deployment-dependencies, script]
     - !reference [.normalize-feature-name, script]
-    - TYPO3_BASEURL="https://$DOMAIN_STAGE/${FEATURE_NAME}/"
+    - export TYPO3_BASEURL="https://$DOMAIN_STAGE/${FEATURE_NAME}/"
     - echo -e "\e[33mRunning Codeception tests on $TYPO3_BASEURL\e[0m"
     - vendor/bin/codecept run --html --steps
   artifacts:
