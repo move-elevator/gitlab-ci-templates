@@ -19,5 +19,5 @@ release:
     ref: '$CI_COMMIT_SHA'
     assets:
       links:
-        - name: 'Container Image $CI_COMMIT_TAG'
-          url: "https://$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
+        - name: '${RELEASE_ASSET_LINK_NAME}'
+          url: '${RELEASE_ASSET_LINK_URL}'
