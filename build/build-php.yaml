@@ -17,6 +17,8 @@ build:php:
     COMPOSER_INSTALL_OPTIONS: >
           --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction
           --no-progress --no-scripts
+  before_script:
+    - !reference [.composer-auth, script]
   script:
     - composer config -g cache-dir "$(pwd)/.composer-cache"
     - if [ ! -d "vendor" ]; then composer install $COMPOSER_INSTALL_OPTIONS; fi
