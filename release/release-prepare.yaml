@@ -1,0 +1,130 @@
+# Purpose:
+#   Cut a release: bump the version, generate the changelog, commit, tag and push. Pushing the
+#   tag starts the tag pipeline, which publishes the GitLab Release and deploys to production.
+#   The job is manual and sits in the "release" stage, so the button only unlocks once build,
+#   analyze and the staging deploy have gone green.
+#
+# Dependency:
+#   Composer package "eliashaeussler/version-bumper" and a "version-bumper.yaml" listing the
+#     files that carry the version
+#   Npm script "changelog" that writes CHANGELOG.md (conventional-changelog)
+#   Jobs "build:php" and "build:node" for the vendor/ and node_modules/ artifacts
+#   CI/CD variable RELEASE_TOKEN: masked and protected, "write_repository" scope. Only project
+#     members who may push to the default branch can run the job, so protect that branch and
+#     restrict "Allowed to push and merge" to the people who may release.
+#
+# Variables:
+#   RELEASE_RANGE    major|minor|patch - omit to let version-bumper derive the range from the
+#                    conventional commits since the last tag
+#   RELEASE_DRY_RUN  set to any value to rehearse a release: everything runs, but the two pushes
+#                    become `git push --dry-run`, so no commit, tag, GitLab Release, notification
+#                    or deployment happens. With it set the job is also offered on non-default
+#                    branches, so a release can be rehearsed without touching the default branch.
+#
+release:prepare:
+  stage: release
+  image:
+    name: ${DEFAULT_IMAGE_RELEASE_PREPARE}
+  dependencies:
+    - build:php
+    - build:node
+  resource_group: release
+  variables:
+    GIT_STRATEGY: clone
+    # Required to detect the range by conventional commits, so the full history is needed
+    GIT_DEPTH: 0
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual
+      allow_failure: false
+    - if: '$RELEASE_DRY_RUN'
+      when: manual
+      allow_failure: true
+    - when: never
+  before_script:
+    - !reference [.composer-auth, script]
+  script:
+    - |
+      set -euo pipefail
+
+      : "${GITLAB_USER_NAME:?}"
+      : "${GITLAB_USER_EMAIL:?}"
+      : "${RELEASE_TOKEN:?masked CI variable holding a token with write_repository scope}"
+
+      # A dry run may be rehearsed on any branch; a real release only ever comes from the
+      # default branch. The rules already enforce this, so this is a second line of defence.
+      RELEASE_BRANCH="${CI_COMMIT_BRANCH:-$CI_DEFAULT_BRANCH}"
+      if [ -z "${RELEASE_DRY_RUN:-}" ] && [ "$RELEASE_BRANCH" != "$CI_DEFAULT_BRANCH" ]; then
+          echo "Refusing to release from ${RELEASE_BRANCH}: real releases come from ${CI_DEFAULT_BRANCH} only." >&2
+          echo "Set RELEASE_DRY_RUN to rehearse a release from this branch instead." >&2
+          exit 1
+      fi
+
+      # GitLab sets GITLAB_USER_* to the user who started a *manual* job (not the pipeline
+      # creator), so the release commit is attributed to whoever pressed the button.
+      git config user.name "$GITLAB_USER_NAME"
+      git config user.email "$GITLAB_USER_EMAIL"
+      git remote set-url origin "https://oauth2:${RELEASE_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+
+      git fetch --force --tags origin "$RELEASE_BRANCH"
+
+      if [ "$(git rev-parse FETCH_HEAD)" != "$CI_COMMIT_SHA" ]; then
+          echo "Refusing to release: ${RELEASE_BRANCH} has moved on since this pipeline started." >&2
+          echo "Re-run the job from a pipeline for the current branch tip." >&2
+          exit 1
+      fi
+
+      # CI checks out a detached HEAD; the push below needs a real branch to update.
+      git checkout -B "$RELEASE_BRANCH" "$CI_COMMIT_SHA"
+
+      # Bumps every file in version-bumper.yaml, then commits and tags them. --strict makes
+      # an unmatched version pattern an error instead of a silently skipped file. An unset
+      # RELEASE_RANGE expands to nothing, which is what triggers range auto-detection.
+      composer bump-version ${RELEASE_RANGE:-} --release --strict
+
+      TAG="$(git describe --tags --exact-match HEAD)"
+      echo "version-bumper created tag ${TAG}"
+
+      # The changelog has to live inside the tagged commit, but version-bumper stages only
+      # the files listed in version-bumper.yaml, and conventional-changelog emits nothing
+      # while HEAD already carries the new tag. So: drop the tag, generate, fold the
+      # changelog into the release commit, then put the tag back. All local — nothing has
+      # been pushed yet.
+      git tag -d "$TAG"
+      npm run changelog
+      git add CHANGELOG.md
+      git commit --amend --no-edit
+      git tag "$TAG"
+
+      # version-bumper regenerates composer.lock and package-lock.json through its
+      # post-actions and stages them along with the manifests. If that ever stops happening,
+      # those bumps would be left behind as working-tree changes and the release commit would
+      # be incomplete — catch it here, while nothing has been pushed yet. Untracked files
+      # (build artifacts) are ignored.
+      if ! git diff --quiet || ! git diff --cached --quiet; then
+          echo "Refusing to push: tracked changes left outside the release commit:" >&2
+          git status --short --untracked-files=no >&2
+          exit 1
+      fi
+
+      if [ -n "${RELEASE_DRY_RUN:-}" ]; then
+          echo "===== DRY RUN - nothing will be pushed ====="
+          echo "would release ${TAG} from ${RELEASE_BRANCH} as ${GITLAB_USER_NAME} <${GITLAB_USER_EMAIL}>"
+          echo "--- release commit ---"
+          git --no-pager show --stat --format='%H%n%an <%ae>%n%s' HEAD
+          echo "--- CHANGELOG.md section that would be published ---"
+          git --no-pager show "HEAD:CHANGELOG.md" | sed -n '1,40p'
+          echo "--- push pre-flight (contacts the remote, updates nothing) ---"
+          git push --dry-run origin "HEAD:refs/heads/${RELEASE_BRANCH}"
+          git push --dry-run origin "refs/tags/${TAG}"
+          echo "===== DRY RUN complete - no commit, tag, release, notification or deployment ====="
+          exit 0
+      fi
+
+      # ci.skip stops the release commit from starting a second branch pipeline. The tag push
+      # is deliberately not skipped: that pipeline builds the release notes, creates the
+      # GitLab Release and deploys to production.
+      git push --push-option=ci.skip origin "HEAD:refs/heads/${RELEASE_BRANCH}"
+      git push origin "refs/tags/${TAG}"
+
+      echo "Released ${TAG} as ${GITLAB_USER_NAME} <${GITLAB_USER_EMAIL}>"

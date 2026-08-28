@@ -1,0 +1,46 @@
+# Purpose:
+#   Extract the release notes for the current tag from CHANGELOG.md. The artifact becomes the
+#   GitLab Release description and can be quoted in deployment notifications.
+#
+#   This is the counterpart to release/release-prepare.yaml, which generates CHANGELOG.md from
+#   conventional commits. It replaces build/build-release-notes.yaml, which reads GitLab's
+#   changelog API - that API does not understand conventional commits. Include exactly one.
+#
+# Dependency:
+#   A CHANGELOG.md whose version headings are `## [1.2.3](compare-url) (date)`, as written by
+#   conventional-changelog
+#
+build:release-notes:
+  stage: build
+  image: alpine:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
+  script:
+    # `##?` matches one or two hashes, so the section stops at the next version heading while
+    # its own `### Features` / `### Bug Fixes` subheadings stay inside it. Dots in the tag are
+    # turned into `[.]` so they cannot act as regex wildcards.
+    # Tags cut before the changelog existed have no CHANGELOG.md to read, so tolerate its
+    # absence and let the fallback below handle it.
+    - |
+      if [ -f CHANGELOG.md ]; then
+          awk -v tag="$CI_COMMIT_TAG" '
+              BEGIN { gsub(/\./, "[.]", tag) }
+              $0 ~ "^##? \\[?v?" tag "\\]?" { found = 1; print; next }
+              found && /^##? \[?v?[0-9]+\.[0-9]+\.[0-9]+/ { exit }
+              found { print }
+          ' CHANGELOG.md > release_notes.md
+      else
+          : > release_notes.md
+      fi
+    # A release built only from hidden commit types (refactor, chore, test) yields a heading
+    # with no entries under it, and a tag missing from the changelog yields nothing at all.
+    # Emit something readable in both cases rather than an empty release page.
+    - |
+      if [ -z "$(sed '/^#/d; /^[[:space:]]*$/d' release_notes.md)" ]; then
+          printf '## %s\n\nNo user-facing changes recorded for this release.\n' "$CI_COMMIT_TAG" > release_notes.md
+      fi
+    - cat release_notes.md
+  artifacts:
+    paths:
+      - release_notes.md
+    expire_in: 1 day

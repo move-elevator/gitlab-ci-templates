@@ -11,6 +11,12 @@ variables:
   BUILD_NODE_VERSION: "22"
   DEFAULT_IMAGE_BUILD_COMPOSER: "composer:${BUILD_COMPOSER_VERSION}"
   DEFAULT_IMAGE_BUILD_NODE: "node:${BUILD_NODE_VERSION}"
+  # release:prepare needs composer and npm in one image. The Node major is carried by the image
+  # tag and constrained by the project's package.json "engines"; override both together.
+  DEFAULT_IMAGE_RELEASE_PREPARE: "ghcr.io/move-elevator/php8.5-composer-node24:latest"
+  # asset link shown on the GitLab Release page
+  RELEASE_ASSET_LINK_NAME: "Container Image $CI_COMMIT_TAG"
+  RELEASE_ASSET_LINK_URL: "https://$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
   # Default host is stage - this is overridden in prod deployment
   SSH_USER: ${SSH_USER_STAGE}
   SSH_HOST: ${SSH_HOST_STAGE}
@@ -86,10 +92,22 @@ stages:
       echo -e "\e[0Ksection_end:`date +%s`:${DATE}\r\e[0K"
 
 #-----------------------------------------------------------------------------------------------------------------------
+# COMPOSER AUTHENTICATION
+#-----------------------------------------------------------------------------------------------------------------------
+.composer-auth:
+  script:
+  # projects with private composer repositories expose a token, everywhere else this is a no-op
+  - >
+    if [ -n "${REGISTRY_ACCESS_TOKEN:-}" ]; then
+      composer config --auth gitlab-token.gitlab.com "$REGISTRY_ACCESS_TOKEN";
+    fi
+
+#-----------------------------------------------------------------------------------------------------------------------
 # DEPLOYMENT DEPENDENCIES
 #-----------------------------------------------------------------------------------------------------------------------
 .check-deployment-dependencies:
   script:
+  - !reference [.composer-auth, script]
   # check if composer dependencies are actually available for the next steps
   # needed for manual or scheduled jobs with expired artifacts
   - >
