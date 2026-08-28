@@ -96,9 +96,10 @@ stages:
 #-----------------------------------------------------------------------------------------------------------------------
 .composer-auth:
   script:
-  # projects with private composer repositories expose a token, everywhere else this is a no-op
+  # projects with private composer repositories expose a token, everywhere else this is a no-op.
+  # security:npm:check:scheduled references this from the node image, which ships no composer.
   - >
-    if [ -n "${REGISTRY_ACCESS_TOKEN:-}" ]; then
+    if [ -n "${REGISTRY_ACCESS_TOKEN:-}" ] && command -v composer > /dev/null 2>&1; then
       composer config --auth gitlab-token.gitlab.com "$REGISTRY_ACCESS_TOKEN";
     fi
 
