@@ -112,6 +112,42 @@ Includes:
 - `build/build-release-notes.yaml`
 - `release/release.yaml`
 
+The release notes come from one of two mutually exclusive templates — include exactly one:
+
+- `build/build-release-notes.yaml`: fetches them from GitLab's changelog API.
+- `build/build-release-notes-changelog.yaml`: extracts the section for the current tag from
+  `CHANGELOG.md`. Use this one for projects whose changelog is generated from conventional
+  commits, which the GitLab API does not understand.
+
+The asset link on the release page defaults to the project's container image and is overridden
+with `RELEASE_ASSET_LINK_NAME` and `RELEASE_ASSET_LINK_URL`.
+
+#### Automated releases
+
+Includes:
+- `release/release-prepare.yaml`
+- `build/build-release-notes-changelog.yaml`
+- `release/release.yaml`
+
+`release:prepare` is a manual job on the default branch that bumps the version, generates
+`CHANGELOG.md`, folds both into one `chore(release): version X.Y.Z` commit authored by whoever
+pressed the button, and pushes the commit (with `ci.skip`) and the tag. The tag pipeline then
+builds the release notes, publishes the GitLab Release and deploys to production.
+
+It needs [version-bumper](https://github.com/eliashaeussler/version-bumper) with a
+`version-bumper.yaml`, an npm script `changelog`, and a masked, protected `RELEASE_TOKEN`
+variable holding a token with `write_repository` scope.
+
+> [!IMPORTANT]
+> Only users who may push to a protected branch can run manual jobs on it. Protect the default
+> branch and set "Allowed to push and merge" to the people who may release — that, and not the
+> job definition, is what restricts who can cut a release.
+
+> [!NOTE]
+> Set `RELEASE_DRY_RUN` to any value when starting the job to rehearse a release: everything
+> runs, but both pushes become `git push --dry-run`. With it set the job is also offered on
+> non-default branches.
+
 ### Testing
 
 Run acceptance tests using [Codeception](https://codeception.com/).
