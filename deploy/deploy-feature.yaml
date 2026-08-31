@@ -18,8 +18,12 @@ deploy:feature:
     DEPLOYER_CONFIG_FEATURE_BRANCH_HOST: stage
     FEATURE_STOP_DOWNSTREAM_BRANCH: main
   script:
+    - !reference [.export-environment-url, script]
     - vendor/bin/dep deploy:unlock $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
     - vendor/bin/dep deploy $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+  artifacts:
+    reports:
+      dotenv: environment.env
   environment:
     name: $CI_COMMIT_REF_NAME
     url: $ENVIRONMENT_URL

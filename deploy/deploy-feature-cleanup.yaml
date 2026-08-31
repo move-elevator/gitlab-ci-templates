@@ -18,6 +18,5 @@ deploy:feature:cleanup:
   resource_group: $CI_COMMIT_REF_NAME
   environment:
     name: $CI_COMMIT_REF_NAME
-    url: $ENVIRONMENT_URL
     action: stop
   allow_failure: true

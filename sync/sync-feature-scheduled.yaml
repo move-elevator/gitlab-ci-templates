@@ -11,6 +11,7 @@ sync:feature:scheduled:
     DEPLOYER_CONFIG_FEATURE_BRANCH_HOST: stage
     DEPLOYER_CONFIG_FEATURE_SYNC_CONFIG: ".deployment/db-sync-tool/sync-prod-to-stage.yaml"
   script:
+    - !reference [.export-environment-url, script]
     - !reference [.check-deployment-dependencies, script]
     # upgrade db-sync-tool
     - >
@@ -20,6 +21,9 @@ sync:feature:scheduled:
     - >
       vendor/bin/dep feature:sync $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST
       --feature=$CI_COMMIT_REF_NAME $DEPLOYER_CONFIG_ADDITIONAL_OPTION
+  artifacts:
+    reports:
+      dotenv: environment.env
   rules:
     - if: $CI_JOB_NAME == $SCHEDULE_TASK_NAME
       when: always
