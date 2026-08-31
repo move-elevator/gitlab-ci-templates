@@ -102,9 +102,9 @@ stages:
 #-----------------------------------------------------------------------------------------------------------------------
 .normalize-feature-name:
   script:
-  # branch names may contain slashes (e.g. feature/ABC-12), deployer-tools flattens them
-  # to a hyphen for the actual instance path, mirror that here to build matching URLs
-  - FEATURE_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-')
+  # mirrors deployer-tools' FeatureUtility::normalize(): slashes become hyphens, then
+  # anything outside A-Za-z0-9_.- is stripped, so the built name matches the actual instance path
+  - FEATURE_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/\\' '-' | tr -cd 'A-Za-z0-9_.-')
 
 #-----------------------------------------------------------------------------------------------------------------------
 # ENVIRONMENT URL
