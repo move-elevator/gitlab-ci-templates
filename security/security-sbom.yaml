@@ -1,0 +1,66 @@
+# Purpose:
+#   Generate a CycloneDX SBOM (Software Bill of Materials) for the application dependencies
+#   and publish it to the project's Generic Package Registry.
+#   Serves as technical documentation in terms of the Cyber Resilience Act (CRA).
+#
+# Dependency:
+#   composer.lock and/or package-lock.json in the repository root
+#
+# Notes:
+#   - Both ecosystems are covered by a single syft run, no separate node job is needed.
+#   - The official syft images are built from scratch and provide no shell, so syft is
+#     installed from its release archive. SBOM_SYFT_VERSION is the reproducibility anchor.
+#   - Only the two lock file catalogers are enabled, which keeps the result deterministic
+#     and independent of syft's default cataloger selection.
+#   - Dev dependencies are excluded by syft for both ecosystems, so the SBOM describes the
+#     shipped application rather than the build toolchain.
+#   - The package registry copy is the durable one, the artifact is only for convenience.
+#     Technical documentation has to be kept for the declared support period (up to 10 years),
+#     so make sure no cleanup policy removes generic packages.
+#
+security:sbom:
+  image:
+    name: alpine:latest
+  stage: security
+  dependencies: [ ]
+  variables:
+    GIT_STRATEGY: fetch
+    SBOM_SYFT_VERSION: "1.51.0"
+    SBOM_FILE: "sbom.cdx.json"
+    SBOM_PACKAGE_NAME: "sbom"
+    ## Pinned deliberately, 1.6 is supported more widely by scanners than syft's default
+    SBOM_CYCLONEDX_SPEC: "1.6"
+  script:
+    - command -v curl > /dev/null 2>&1 || apk add --no-cache curl
+    - >
+      case "$(uname -m)" in
+        x86_64) SYFT_ARCH=amd64 ;;
+        aarch64) SYFT_ARCH=arm64 ;;
+        *) echo "Unsupported architecture $(uname -m)"; exit 1 ;;
+      esac
+    - >
+      curl --fail --show-error --silent --location
+      "https://github.com/anchore/syft/releases/download/v${SBOM_SYFT_VERSION}/syft_${SBOM_SYFT_VERSION}_linux_${SYFT_ARCH}.tar.gz"
+      | tar -xz -C /usr/local/bin syft
+    ## The package registry only accepts semantic versions, tags may carry a leading "v"
+    - SBOM_VERSION="${CI_COMMIT_TAG#v}"
+    - >
+      syft scan dir:.
+      --override-default-catalogers 'php-composer-lock-cataloger,javascript-lock-cataloger'
+      --exclude './vendor'
+      --exclude './node_modules'
+      --source-name "${CI_PROJECT_PATH}"
+      --source-version "${SBOM_VERSION}"
+      --output "cyclonedx-json@${SBOM_CYCLONEDX_SPEC}=${SBOM_FILE}"
+    - >
+      curl --fail --show-error --silent
+      --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
+      --upload-file "${SBOM_FILE}"
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${SBOM_PACKAGE_NAME}/${SBOM_VERSION}/${SBOM_FILE}"
+  artifacts:
+    paths:
+      - ${SBOM_FILE}
+    expire_in: 1 year
+  ## Only released versions are documented, which matches the prod deployment being tag gated
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/'
