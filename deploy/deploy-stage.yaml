@@ -23,4 +23,7 @@ deploy:stage:
     - if: $CI_COMMIT_REF_NAME == $STAGE_TARGET_BRANCH
       when: always
     - when: never
+  environment:
+    name: stage
+    url: https://$DOMAIN_STAGE/
   allow_failure: false
