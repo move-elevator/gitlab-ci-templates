@@ -16,9 +16,9 @@ sync:feature:
     # Python toolchain, deployer-tools falls back to it when vendor/bin/sync-tool
     # (php-sync-tool) isn't installed via Composer
     - >
-      command -v pip3 >/dev/null 2>&1 && pip3 install --quiet --disable-pip-version-check
+      if command -v pip3 >/dev/null 2>&1; then pip3 install --quiet --disable-pip-version-check
       --root-user-action=ignore --user --upgrade db-sync-tool-kmi file-sync-tool-kmi
-      --break-system-packages || true
+      --break-system-packages; fi
     # sync stage
     - >
       vendor/bin/dep feature:sync $DEPLOYER_CONFIG_FEATURE_BRANCH_HOST
