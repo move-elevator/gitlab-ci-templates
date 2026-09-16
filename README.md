@@ -156,6 +156,35 @@ Includes:
 - `test/test-feature-codeception.yaml`
 - `test/test-prod-codeception.yaml`
 
+Run browser tests using [Ghost Inspector](https://ghostinspector.com/).
+
+Includes:
+- `test/test-feature-ghost-inspector.yaml`
+- `test/test-prod-ghost-inspector.yaml`
+
+The jobs run one existing Ghost Inspector suite via the [Ghost Inspector CLI](https://docs.ghostinspector.com/api/cli/)
+and override its start URL with the deployed instance, so the same suite covers every feature
+branch and prod. A non-passing test fails the job.
+
+They need a masked and protected `GHOST_INSPECTOR_API_KEY` variable (User Settings > Details >
+API Access) and `GHOST_INSPECTOR_SUITE_ID` set to the suite to run (Suite Settings > Details >
+Suite ID):
+
+```yaml
+variables:
+  GHOST_INSPECTOR_SUITE_ID: '1234567890abcdef12345678'
+```
+
+`GHOST_INSPECTOR_REGION` is set on the jobs and defaults to `eu-west-1`.
+
+> [!IMPORTANT]
+> Ghost Inspector is a US provider, so using it transfers the tested URLs, test data and
+> screenshots to a third country. Keep production personal data out of test steps and check
+> whether the project needs a data processing agreement.
+
+> [!NOTE]
+> `test:prod:ghost-inspector` is a manual job, like the other prod test jobs.
+
 ### Cache Warmup
 
 Warm up the cache after deployment using [EXT:typo3-warming](https://github.com/eliashaeussler/typo3-warming).
