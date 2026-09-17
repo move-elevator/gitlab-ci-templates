@@ -144,6 +144,11 @@ variable holding a token with `write_repository` scope.
 > job definition, is what restricts who can cut a release.
 
 > [!NOTE]
+> The job ends green without releasing when the branch tip is already the last tag — there is
+> nothing to put in the changelog. Set `RELEASE_RANGE` to `major`, `minor` or `patch` to release
+> anyway.
+
+> [!NOTE]
 > Set `RELEASE_DRY_RUN` to any value when starting the job to rehearse a release: everything
 > runs, but both pushes become `git push --dry-run`. With it set the job is also offered on
 > non-default branches.

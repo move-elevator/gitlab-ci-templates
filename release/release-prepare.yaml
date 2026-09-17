@@ -15,7 +15,9 @@
 #
 # Variables:
 #   RELEASE_RANGE    major|minor|patch - omit to let version-bumper derive the range from the
-#                    conventional commits since the last tag
+#                    conventional commits since the last tag. Setting it also overrides the
+#                    "nothing to release" check below, which otherwise ends the job green
+#                    without a release when the branch tip is already the last tag.
 #   RELEASE_DRY_RUN  set to any value to rehearse a release: everything runs, but the two pushes
 #                    become `git push --dry-run`, so no commit, tag, GitLab Release, notification
 #                    or deployment happens. With it set the job is also offered on non-default
@@ -74,6 +76,17 @@ release:prepare:
           echo "Refusing to release: ${RELEASE_BRANCH} has moved on since this pipeline started." >&2
           echo "Re-run the job from a pipeline for the current branch tip." >&2
           exit 1
+      fi
+
+      # Nothing to release when the branch tip is already tagged: version-bumper would bump
+      # the version anyway and publish a release whose changelog section is empty. An explicit
+      # RELEASE_RANGE means the release was asked for on purpose, so it overrides the check.
+      LAST_TAG="$(git describe --tags --abbrev=0 FETCH_HEAD 2>/dev/null || true)"
+      if [ -z "${RELEASE_RANGE:-}" ] && [ -n "$LAST_TAG" ] \
+          && [ "$(git rev-list --count "${LAST_TAG}..FETCH_HEAD")" -eq 0 ]; then
+          echo "Nothing to release: ${RELEASE_BRANCH} has no commits since ${LAST_TAG}."
+          echo "Set RELEASE_RANGE to major, minor or patch to release anyway."
+          exit 0
       fi
 
       # CI checks out a detached HEAD; the push below needs a real branch to update.
