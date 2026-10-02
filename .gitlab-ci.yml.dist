@@ -14,6 +14,7 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-stan.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-rector.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-style-lint.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typescript-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-yaml-lint.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
