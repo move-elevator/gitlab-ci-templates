@@ -1,0 +1,48 @@
+# Purpose:
+#   Test prod with a Ghost Inspector browser test suite
+#
+# Dependency:
+#   A Ghost Inspector account holding the test suite
+#
+# Notes:
+#   - GHOST_INSPECTOR_API_KEY has to be provided as a masked and protected CI/CD variable
+#   - GHOST_INSPECTOR_SUITE_ID is the suite to run. Set it in the project's global variables,
+#     not on the job, so it is shared with the feature job.
+#   - The suite start URL is overridden with the prod URL, so a single suite covers prod as
+#     well as every feature branch.
+#   - The region is pinned to the EU so test traffic and screenshots stay inside the EU.
+#     Ghost Inspector is a US provider, the account itself is still a transfer to a third
+#     country - do not use production personal data in test steps.
+#   - The official image declares an entrypoint that has to be cleared for GitLab-CI.
+#   - Manual like the other prod test jobs, so a release does not spend suite runs unless
+#     someone asks for them.
+#
+test:prod:ghost-inspector:
+  stage: test.prod
+  image:
+    name: ghostinspector/cli:latest
+    entrypoint: [ "" ]
+  needs:
+    - deploy:prod
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+  variables:
+    GHOST_INSPECTOR_REGION: "eu-west-1"
+    GHOST_INSPECTOR_START_URL: https://$DOMAIN_PROD/
+  script:
+    - >
+      if [ -z "${GHOST_INSPECTOR_API_KEY:-}" ] || [ -z "${GHOST_INSPECTOR_SUITE_ID:-}" ]; then
+        echo -e "\e[31mGHOST_INSPECTOR_API_KEY and GHOST_INSPECTOR_SUITE_ID have to be set\e[0m";
+        exit 1;
+      fi
+    - echo -e "\e[33mRunning Ghost Inspector suite $GHOST_INSPECTOR_SUITE_ID on $GHOST_INSPECTOR_START_URL\e[0m"
+    - >
+      ghost-inspector suite execute "$GHOST_INSPECTOR_SUITE_ID"
+      --apiKey "$GHOST_INSPECTOR_API_KEY"
+      --startUrl "$GHOST_INSPECTOR_START_URL"
+      --region "$GHOST_INSPECTOR_REGION"
+      --errorOnFail
