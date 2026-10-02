@@ -4,7 +4,7 @@
 # Dependency:
 #   Composer script "lint:yaml"
 #
-analyze:xml:lint:
+analyze:yaml:lint:
   image:
     name: ${DEFAULT_IMAGE_BUILD_COMPOSER}
   stage: analyze
