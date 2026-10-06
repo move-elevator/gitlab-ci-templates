@@ -17,6 +17,10 @@ variables:
   # asset link shown on the GitLab Release page
   RELEASE_ASSET_LINK_NAME: "Container Image $CI_COMMIT_TAG"
   RELEASE_ASSET_LINK_URL: "https://$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
+  # Ghost Inspector tests run with @move-elevator/recorded-test-runner. The browser image has to match
+  # the Playwright version that runner release depends on, so both are pinned and bumped together.
+  GI_RUNNER_VERSION: "1.0.0"
+  GI_PLAYWRIGHT_VERSION: "1.63.0"
   # Default host is stage - this is overridden in prod deployment
   SSH_USER: ${SSH_USER_STAGE}
   SSH_HOST: ${SSH_HOST_STAGE}

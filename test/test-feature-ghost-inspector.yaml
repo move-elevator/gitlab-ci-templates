@@ -1,0 +1,52 @@
+# Purpose:
+#   Run the exported Ghost Inspector tests against a feature branch instance with Playwright,
+#   so they run in every branch pipeline without consuming Ghost Inspector test runs
+#
+# Dependency:
+#   build:ghost-inspector
+#   @move-elevator/recorded-test-runner (npm)
+#   Optional CI/CD variables GI_HTTP_AUTH_USER and GI_HTTP_AUTH_PASSWORD for basic auth
+#
+test:feature:ghost-inspector:
+  stage: test
+  image: mcr.microsoft.com/playwright:v${GI_PLAYWRIGHT_VERSION}-noble
+  # waits for the deployment and, if the project includes it, the cache warmup
+  needs:
+    - build:ghost-inspector
+    - job: deploy:feature
+      artifacts: false
+      optional: true
+    - job: cache:feature:warmup
+      artifacts: false
+      optional: true
+  # tests written for prod can fail on feature instances for reasons unrelated to the change
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
+  variables:
+    FORCE_COLOR: "1"
+    GI_JSON_FILE: .ghost-inspector/results.json
+    GI_JUNIT_FILE: .ghost-inspector/junit.xml
+    GI_SCREENSHOT_DIR: .ghost-inspector/screenshots
+  script:
+    # build:ghost-inspector may fail as allowed, and its artifacts expire after a day
+    - >
+      if [ ! -s .ghost-inspector/export.json ]; then
+        echo -e "\e[31mNo Ghost Inspector export found, check or re-run build:ghost-inspector\e[0m";
+        exit 1;
+      fi
+    - !reference [.normalize-feature-name, script]
+    - export GI_BASE_URL="https://$DOMAIN_STAGE/${FEATURE_NAME}/"
+    - echo -e "\e[33mRunning Ghost Inspector tests on $GI_BASE_URL\e[0m"
+    - npx --yes "@move-elevator/recorded-test-runner@${GI_RUNNER_VERSION}" run .ghost-inspector/export.json
+  artifacts:
+    when: always
+    paths:
+      - .ghost-inspector/junit.xml
+      - .ghost-inspector/results.json
+      - .ghost-inspector/screenshots/
+    reports:
+      junit: .ghost-inspector/junit.xml
+    expire_in: 1 day
