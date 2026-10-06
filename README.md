@@ -178,6 +178,9 @@ Includes:
 
 `build:ghost-inspector` exports the suites and every test they import via "execute", including shared modules from other suites. `test:feature:ghost-inspector` runs them in every viewport configured in the suite against `https://$DOMAIN_STAGE/<feature>/`, with URLs of the recorded site rewritten to that instance. The JUnit report shows up in the merge request, the JSON report and screenshots of failed runs are kept as artifacts. Supported step commands, withheld values and known differences to Ghost Inspector are documented with the runner.
 
+> [!WARNING]
+> Because `GI_API_KEY` is not protected, anyone who can push a branch can read it through a pipeline, as with every unprotected variable. Masking does not prevent that. Use a dedicated Ghost Inspector user, so the key can be revoked on its own, and do not use these templates in projects with untrusted contributors.
+
 > [!NOTE]
 > Both jobs are `allow_failure: true`. An unreachable Ghost Inspector API must not block the pipeline, and tests written for prod can fail on feature instances for reasons unrelated to the change: selectors with absolute paths such as `a[href="/page"]` (use `a[href$="/page"]`), links hardcoded to `/`, or assertions on live data.
 
