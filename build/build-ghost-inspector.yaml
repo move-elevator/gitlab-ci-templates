@@ -1,0 +1,26 @@
+# Purpose:
+#   Export Ghost Inspector tests for test:feature:ghost-inspector. Exporting does not consume test runs.
+#   The export is sanitized (no credentials, no notifications), so it is kept as artifact.
+#
+# Dependency:
+#   @move-elevator/recorded-test-runner (npm)
+#   CI/CD variable GI_API_KEY (masked, not protected, feature branches need it)
+#   CI/CD variable GI_SUITE_IDS (comma-separated) or GI_FOLDER_ID
+#
+build:ghost-inspector:
+  stage: build
+  image: ${DEFAULT_IMAGE_BUILD_NODE}
+  needs: []
+  # an unreachable Ghost Inspector API must not block sync, cleanup or the merge request
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
+  script:
+    - mkdir -p .ghost-inspector
+    - npx --yes "@move-elevator/recorded-test-runner@${GI_RUNNER_VERSION}" export > .ghost-inspector/export.json
+  artifacts:
+    paths:
+      - .ghost-inspector/export.json
+    expire_in: 1 day
