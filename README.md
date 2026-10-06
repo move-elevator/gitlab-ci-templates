@@ -162,6 +162,28 @@ Includes:
 - `test/test-feature-codeception.yaml`
 - `test/test-prod-codeception.yaml`
 
+#### Ghost Inspector
+
+Run the tests of [Ghost Inspector](https://ghostinspector.com/) suites against the feature branch instance with [`@move-elevator/recorded-test-runner`](https://www.npmjs.com/package/@move-elevator/recorded-test-runner), so they run in every branch pipeline without consuming Ghost Inspector test runs. The tests stay maintained in Ghost Inspector and are exported fresh in every pipeline.
+
+Includes:
+- `build/build-ghost-inspector.yaml`
+- `test/test-feature-ghost-inspector.yaml`
+
+| Variable | Purpose |
+|---|---|
+| `GI_API_KEY` | API key, masked but not protected, because feature branches need it. Use the key of a dedicated Ghost Inspector user, since it can also start test runs |
+| `GI_SUITE_IDS` or `GI_FOLDER_ID` | Comma-separated suite IDs, or a folder whose suites are all exported |
+| `GI_HTTP_AUTH_USER`, `GI_HTTP_AUTH_PASSWORD` | Optional basic auth for the feature instance. Credentials stored in Ghost Inspector are never exported |
+
+`build:ghost-inspector` exports the suites and every test they import via "execute", including shared modules from other suites. `test:feature:ghost-inspector` runs them in every viewport configured in the suite against `https://$DOMAIN_STAGE/<feature>/`, with URLs of the recorded site rewritten to that instance. The JUnit report shows up in the merge request, the JSON report and screenshots of failed runs are kept as artifacts. Supported step commands, withheld values and known differences to Ghost Inspector are documented with the runner.
+
+> [!NOTE]
+> Both jobs are `allow_failure: true`. An unreachable Ghost Inspector API must not block the pipeline, and tests written for prod can fail on feature instances for reasons unrelated to the change: selectors with absolute paths such as `a[href="/page"]` (use `a[href$="/page"]`), links hardcoded to `/`, or assertions on live data.
+
+> [!IMPORTANT]
+> `GI_RUNNER_VERSION` and `GI_PLAYWRIGHT_VERSION` in `.base.yaml` are bumped together: the browser image has to match the Playwright version of that runner release. The export job needs Node.js 22.13 or later, so `BUILD_NODE_VERSION` must be at least `22`.
+
 ### Cache Warmup
 
 Warm up the cache after deployment using [EXT:typo3-warming](https://github.com/eliashaeussler/typo3-warming).

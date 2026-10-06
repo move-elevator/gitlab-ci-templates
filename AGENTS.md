@@ -20,7 +20,7 @@ include:
 - `deploy/`: feature, stage and prod deployments with rollback and cleanup, using [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools)
 - `sync/`: database and file sync to feature environments
 - `cache/`: cache warmup after deploy
-- `test/`: post-deployment acceptance tests (Codeception, HTTP client)
+- `test/`: post-deployment acceptance tests (Codeception, HTTP client, Ghost Inspector via `@move-elevator/recorded-test-runner`)
 - `release/`: release preparation and GitLab release creation on version tags
 - `security/`: scheduled dependency audits and SBOM
 - `.github/workflows/cgl.yml`: CI for this repository
@@ -44,6 +44,7 @@ Job dependencies:
 build:php -> analyze:php:*, deploy:*, sync:*, security:*
 build:node -> analyze:js:lint, analyze:style:lint
 deploy:feature -> cache:feature:warmup -> test:feature:*
+build:ghost-inspector -> test:feature:ghost-inspector
 deploy:prod -> cache:prod:warmup -> test:prod:*
 build:release-notes -> release (tags only)
 ```
