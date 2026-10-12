@@ -156,11 +156,35 @@ variable holding a token with `write_repository` scope.
 
 ### Testing
 
-Run acceptance tests using [Codeception](https://codeception.com/).
+Tests are split by whether they need a deployed instance.
+
+Unit and functional tests run in the `test.unit` stage right after the build, without any deployment. They run on the default image, since they execute project code.
+
+Includes:
+- `test/test-php-unit.yaml` (composer script `test:php:unit`)
+- `test/test-php-functional.yaml` (composer script `test:php:functional`, SQLite via `typo3DatabaseDriver`)
+- `test/test-typescript-unit.yaml` (npm script `test:ts:unit`)
+
+E2E tests run in the `test.e2e.feature` and `test.e2e.prod` stages against the warmed-up environment, using [Codeception](https://codeception.com/), the JetBrains HTTP client or [Playwright](https://playwright.dev/).
 
 Includes:
 - `test/test-feature-codeception.yaml`
+- `test/test-feature-http-client.yaml`
+- `test/test-feature-playwright.yaml` (npm script `test:e2e`, target in `BASE_URL`)
 - `test/test-prod-codeception.yaml`
+- `test/test-prod-http-client.yaml`
+- `test/test-prod-playwright.yaml`
+
+Prod E2E tests are manual jobs on semver tags. This includes `test:prod:http`, which previously ran automatically on branches.
+
+> [!NOTE]
+> `PLAYWRIGHT_VERSION` selects the Playwright image and has to match the project's `@playwright/test` version. The Playwright config has to read the target from `process.env.BASE_URL`.
+
+> [!NOTE]
+> Deploy jobs do not depend on the test jobs, so failing tests do not block a deployment.
+
+> [!IMPORTANT]
+> The stages `test` and `test.prod` are deprecated in favor of `test.e2e.feature` and `test.e2e.prod` and will be removed. Move custom jobs using the old stage names.
 
 #### Ghost Inspector
 

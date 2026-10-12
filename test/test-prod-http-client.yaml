@@ -2,14 +2,18 @@
 #   Test prod with jetbrains http tests
 #
 test:prod:http:
-  stage: test
+  stage: test.e2e.prod
   image: jetbrains/intellij-http-client
   needs:
-    - deploy:feature
+    - cache:prod:warmup
   rules:
-    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_REF_NAME =~ /^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^\/]+\/.*)$/
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+      when: manual
+      # optional tests, a pending manual job would block later stages like security:sbom
+      allow_failure: true
+    - when: never
   variables:
     HTTP_TEST_DIR: tests/http
     HTTP_ENV_FILE: http-client.env.json

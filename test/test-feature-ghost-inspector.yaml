@@ -8,7 +8,7 @@
 #   Optional CI/CD variables GI_HTTP_AUTH_USER and GI_HTTP_AUTH_PASSWORD for basic auth
 #
 test:feature:ghost-inspector:
-  stage: test
+  stage: test.e2e.feature
   image: mcr.microsoft.com/playwright:v${GI_PLAYWRIGHT_VERSION}-noble
   # waits for the deployment and, if the project includes it, the cache warmup
   needs:
