@@ -20,13 +20,15 @@ include:
 - `deploy/`: feature, stage and prod deployments with rollback and cleanup, using [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools)
 - `sync/`: database and file sync to feature environments
 - `cache/`: cache warmup after deploy
-- `test/`: post-deployment acceptance tests (Codeception, HTTP client)
+- `test/`: unit and functional tests without a deployed instance (PHPUnit, TypeScript) and post-deployment E2E tests (Codeception, HTTP client, Playwright)
 - `release/`: release preparation and GitLab release creation on version tags
 - `security/`: scheduled dependency audits and SBOM
 - `.github/workflows/cgl.yml`: CI for this repository
 - `CODEOWNERS`
 
-Stage order, defined in `.base.yaml`: `build`, `analyze`, `deploy.feature`, `deploy.stage`, `sync`, `cache`, `test`, `deploy.prod`, `cache.prod`, `test.prod`, `release`, `security`.
+Stage order, defined in `.base.yaml`: `build`, `analyze`, `test.unit`, `deploy.feature`, `deploy.stage`, `sync`, `cache`, `test.e2e.feature`, `deploy.prod`, `cache.prod`, `test.e2e.prod`, `release`, `security`.
+
+Tests are split by whether they need a deployed instance: `test.unit` runs right after the build, `test.e2e.*` runs against the warmed-up environment. `test` and `test.prod` are deprecated and stay in the list only so custom jobs in consuming projects keep working. Deploy jobs do not need the test jobs, so failing tests do not block a deployment.
 
 ## Conventions
 
@@ -36,14 +38,15 @@ Stage order, defined in `.base.yaml`: `build`, `analyze`, `deploy.feature`, `dep
 - Feature branch regex: `^(main|feature-.*|[A-Z]{2,}-\d+-.*|[^/]+/.*)$`. Any `prefix/rest` branch matches too, deployer-tools normalizes the slash to a hyphen for the instance name
 - Scheduled jobs require the `SCHEDULE_TASK_NAME` variable to match the job name
 - Feature environments auto-stop after 3 months. `resource_group` prevents concurrent deployments per branch
-- Variables set by consuming projects include `SSH_KEY`, `SSH_USER_STAGE`, `SSH_HOST_STAGE`, `SSH_USER_PROD`, `SSH_HOST_PROD`, `SSH_PORT`, `DOMAIN_STAGE`, `DOMAIN_PROD`, `BUILD_COMPOSER_VERSION`, `BUILD_NODE_VERSION`
+- Variables set by consuming projects include `SSH_KEY`, `SSH_USER_STAGE`, `SSH_HOST_STAGE`, `SSH_USER_PROD`, `SSH_HOST_PROD`, `SSH_PORT`, `DOMAIN_STAGE`, `DOMAIN_PROD`, `BUILD_COMPOSER_VERSION`, `BUILD_NODE_VERSION`, `PLAYWRIGHT_VERSION`
 
 Job dependencies:
 
 ```
-build:php -> analyze:php:*, deploy:*, sync:*, security:*
-build:node -> analyze:js:lint, analyze:style:lint
-deploy:feature -> cache:feature:warmup -> test:feature:*
+build:php -> analyze:php:*, test:php:*, deploy:*, sync:*, security:*
+build:node -> analyze:js:lint, analyze:style:lint, test:typescript:unit, test:feature:playwright
+deploy:feature -> test:feature:http
+deploy:feature -> cache:feature:warmup -> test:feature:codeception, test:feature:playwright
 deploy:prod -> cache:prod:warmup -> test:prod:*
 build:release-notes -> release (tags only)
 ```

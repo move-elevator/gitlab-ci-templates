@@ -5,7 +5,7 @@
 #   Codeception
 #
 test:feature:codeception:
-  stage: test
+  stage: test.e2e.feature
   needs:
     - build:php
     - cache:feature:warmup

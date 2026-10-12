@@ -5,7 +5,7 @@
 #   Codeception
 #
 test:prod:codeception:
-  stage: test.prod
+  stage: test.e2e.prod
   needs:
     - build:php
     - cache:prod:warmup
