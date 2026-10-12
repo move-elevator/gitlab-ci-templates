@@ -1,0 +1,28 @@
+# Purpose:
+#   Run PHP functional tests without a deployed instance, against SQLite by default
+#
+# Dependency:
+#   Composer package "typo3/testing-framework" and a composer script "test:php:functional"
+#
+test:php:functional:
+  # runs on the default image instead of the composer image, the tests execute project code and need its extensions
+  stage: test.unit
+  needs:
+    - build:php
+  variables:
+    typo3DatabaseDriver: pdo_sqlite
+  script:
+    - composer run test:php:functional
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_TAG == null
+      changes:
+        - "**/*.php"
+        - "**/phpunit*.xml*"
+        - "Build/**/*"
+        - "Tests/**/*"
+        - "composer.json"
+        - "composer.lock"

@@ -11,6 +11,8 @@ variables:
   BUILD_NODE_VERSION: "22"
   DEFAULT_IMAGE_BUILD_COMPOSER: "composer:${BUILD_COMPOSER_VERSION}"
   DEFAULT_IMAGE_BUILD_NODE: "node:${BUILD_NODE_VERSION}"
+  # has to match the project's "@playwright/test" version, the image ships the browsers for it
+  PLAYWRIGHT_VERSION: "1.62.1"
   # release:prepare needs composer and npm in one image. The Node major is carried by the image
   # tag and constrained by the project's package.json "engines"; override both together.
   DEFAULT_IMAGE_RELEASE_PREPARE: "ghcr.io/move-elevator/php8.5-composer-node24:latest"
@@ -30,13 +32,17 @@ variables:
 stages:
   - build
   - analyze
+  - test.unit
   - deploy.feature
   - deploy.stage
   - sync
   - cache
+  - test.e2e.feature
+  # deprecated stage names, kept until custom jobs in consuming projects have moved to test.e2e.*
   - test
   - deploy.prod
   - cache.prod
+  - test.e2e.prod
   - test.prod
   - release
   - security

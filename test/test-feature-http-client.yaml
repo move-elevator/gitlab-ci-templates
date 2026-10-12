@@ -2,7 +2,7 @@
 #   Test a feature branch instance with jetbrains http tests
 #
 test:feature:http:
-  stage: test
+  stage: test.e2e.feature
   image: jetbrains/intellij-http-client
   needs:
     - deploy:feature

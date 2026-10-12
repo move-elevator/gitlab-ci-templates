@@ -5,7 +5,7 @@
 #   Codeception
 #
 test:prod:codeception:
-  stage: test.prod
+  stage: test.e2e.prod
   needs:
     - build:php
     - cache:prod:warmup
@@ -14,6 +14,8 @@ test:prod:codeception:
       when: never
     - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
       when: manual
+      # optional tests, a pending manual job would block later stages like security:sbom
+      allow_failure: true
     - when: never
   variables:
     TYPO3_BASEURL: https://$DOMAIN_PROD/

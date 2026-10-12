@@ -1,0 +1,34 @@
+# Purpose:
+#   Test prod with playwright
+#
+# Dependency:
+#   Npm package "@playwright/test" in the version of PLAYWRIGHT_VERSION and a npm script "test:e2e"
+#   The playwright config reads the target from process.env.BASE_URL
+#
+test:prod:playwright:
+  image:
+    name: mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}-noble
+  stage: test.e2e.prod
+  needs:
+    - cache:prod:warmup
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+      when: manual
+      # optional tests, a pending manual job would block later stages like security:sbom
+      allow_failure: true
+    - when: never
+  variables:
+    BASE_URL: https://$DOMAIN_PROD/
+  script:
+    - echo -e "\e[33mRunning Playwright tests on $BASE_URL\e[0m"
+    # installs instead of using the build:node artifact, a manual run after its expiry would fail before the script
+    - npm ci
+    - npm run test:e2e
+  artifacts:
+    when: always
+    paths:
+      - playwright-report/
+      - test-results/
+    expire_in: 1 day
