@@ -12,7 +12,7 @@ security:composer:check:scheduled:
   cache:
     key: security-$CI_JOB_NAME-$CI_COMMIT_REF_NAME
     paths:
-      - vendor/xima/xima-deployer-tools/deployer/security/
+      - vendor/move-elevator/deployer-tools/deployer/security/task/.cache/
   variables:
     GIT_STRATEGY: fetch
   script:
