@@ -20,6 +20,9 @@ build:php:
   before_script:
     - !reference [.composer-auth, script]
   script:
+    # The cache restores public/ over the checkout and its key only changes with composer.lock,
+    # so tracked files such as public/.htaccess would otherwise ship from an older commit.
+    - if git ls-files --error-unmatch public/ >/dev/null 2>&1; then git checkout HEAD -- public/; fi
     - composer config -g cache-dir "$(pwd)/.composer-cache"
     - if [ ! -d "vendor" ]; then composer install $COMPOSER_INSTALL_OPTIONS; fi
   artifacts:
