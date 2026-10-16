@@ -9,9 +9,10 @@
 #   - Run it from a pipeline schedule, the job fails above GRYPE_FAIL_ON, which triggers the
 #     schedule owner's failed pipeline notification.
 #   - SBOM_FILE and SBOM_PACKAGE_NAME must equal the values of security:sbom.
-#   - The SBOM version is the most recently uploaded package of SBOM_PACKAGE_NAME. GitLab does not
-#     document job token access for the package list endpoint, so set SBOM_VERSION in the schedule
-#     if the lookup is rejected, or to scan a specific release instead.
+#   - The SBOM version is the highest semantic version among the newest 100 packages of
+#     SBOM_PACKAGE_NAME. GitLab does not document job token access for the package list endpoint,
+#     so set SBOM_VERSION in the schedule if the lookup is rejected, or to scan a specific release
+#     instead, for example a hotfix of an older release line that is deployed to prod.
 #   - Only vulnerabilities with an available fix are reported, an unfixable finding cannot be
 #     acted upon and would fail the schedule until upstream releases a patch.
 #   - The grype archive is verified against the checksums of the release, GRYPE_VERSION is the
@@ -49,7 +50,7 @@ security:sbom:scan:scheduled:
       if [ -z "${SBOM_VERSION}" ]; then
         PACKAGES_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?package_type=generic&package_name=${SBOM_PACKAGE_NAME}&order_by=created_at&sort=desc&per_page=100"
         curl --fail --show-error --silent --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --output /tmp/packages.json "${PACKAGES_URL}"
-        SBOM_VERSION=$(jq -r --arg name "${SBOM_PACKAGE_NAME}" '[.[] | select(.name == $name)][0].version // empty' /tmp/packages.json)
+        SBOM_VERSION=$(jq -r --arg name "${SBOM_PACKAGE_NAME}" '[.[] | select(.name == $name and (.version | test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))) | {version, semver: (.version | split(".") | map(tonumber))}] | sort_by(.semver) | .[-1].version // empty' /tmp/packages.json)
       fi
     - SBOM_VERSION="${SBOM_VERSION#v}"
     - '[ -n "${SBOM_VERSION}" ] || { echo "No SBOM package found, run the security:sbom job on a release tag first"; exit 1; }'
