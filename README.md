@@ -245,6 +245,13 @@ Runs on semantic version tags only, matching the prod deployment. Published as `
 > [!IMPORTANT]
 > Technical documentation has to be kept for the declared support period. Make sure the project has no cleanup policy that removes generic packages.
 
+Scan the SBOM of the latest released version for known vulnerabilities using [grype](https://github.com/anchore/grype). In contrast to the audit jobs above, it checks what was actually shipped, so vulnerabilities disclosed after the release are found.
+
+Includes:
+- `security/security-sbom-scan-scheduled.yaml`
+
+Needs the `security:sbom` job and a pipeline schedule with `SCHEDULE_TASK_NAME` set to `security:sbom:scan:scheduled`. The job fails on findings with an available fix at or above `GRYPE_FAIL_ON` (default `high`), the full report is kept as artifact. Set `SBOM_VERSION` in the schedule to scan a specific release instead of the latest one.
+
 ## ⭐ License
 
 This project is licensed under [GNU General Public License 3.0 (or later)](LICENSE).

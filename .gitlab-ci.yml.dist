@@ -33,6 +33,7 @@ include:
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yaml'
   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom.yaml'
+  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom-scan-scheduled.yaml'
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
