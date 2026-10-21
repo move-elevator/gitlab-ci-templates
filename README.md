@@ -250,7 +250,7 @@ Scan the SBOM of the latest released version for known vulnerabilities using [gr
 Includes:
 - `security/security-sbom-scan-scheduled.yaml`
 
-Needs the `security:sbom` job and a pipeline schedule with `SCHEDULE_TASK_NAME` set to `security:sbom:scan:scheduled`. The job fails on findings with an available fix at or above `GRYPE_FAIL_ON` (default `high`), the full report is kept as artifact. Set `SBOM_VERSION` in the schedule to scan a specific release instead of the latest one.
+Needs the `security:sbom` job and a pipeline schedule with `SCHEDULE_TASK_NAME` set to `security:sbom:scan:scheduled`. The job fails on findings with an available fix at or above `GRYPE_FAIL_ON` (default `high`), the full report is kept as artifact. Set `SBOM_VERSION` in the schedule to scan a specific release instead of the latest one. A failed job also posts to MS Teams when `DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK` is set, `DEPLOYER_CONFIG_NOTIFICATION_MUTE` silences it. Mask the webhook variable and clear its "Expand variable reference" option, otherwise GitLab rejects the `?`, `&` and `%` of the URL.
 
 ## ⭐ License
 

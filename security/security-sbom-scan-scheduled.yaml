@@ -7,7 +7,8 @@
 #
 # Notes:
 #   - Run it from a pipeline schedule, the job fails above GRYPE_FAIL_ON, which triggers the
-#     schedule owner's failed pipeline notification.
+#     schedule owner's failed pipeline notification, which is easily missed. So it also posts to
+#     MS Teams when DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK (a workflows webhook) is set.
 #   - SBOM_FILE and SBOM_PACKAGE_NAME must equal the values of security:sbom.
 #   - The SBOM version is the highest semantic version among the newest 100 packages of
 #     SBOM_PACKAGE_NAME. GitLab does not document job token access for the package list endpoint,
@@ -54,6 +55,7 @@ security:sbom:scan:scheduled:
       fi
     - SBOM_VERSION="${SBOM_VERSION#v}"
     - '[ -n "${SBOM_VERSION}" ] || { echo "No SBOM package found, run the security:sbom job on a release tag first"; exit 1; }'
+    - printf '%s\n' "${SBOM_VERSION}" > /tmp/sbom-version
     - echo "Scanning SBOM of version ${SBOM_VERSION}"
     - >
       curl --fail --show-error --silent --location
@@ -66,6 +68,15 @@ security:sbom:scan:scheduled:
       --fail-on "${GRYPE_FAIL_ON}"
       --output table
       --output "json=grype-report.json"
+  after_script:
+    - |
+      if [ "${CI_JOB_STATUS}" = "failed" ] && [ -n "${DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK}" ] && [ -z "${DEPLOYER_CONFIG_NOTIFICATION_MUTE}" ]; then
+        VERSION="$(cat /tmp/sbom-version 2>/dev/null)"
+        jq -n --arg text "Der Security-Scan von **${CI_PROJECT_PATH}** (SBOM-Version **${VERSION:-unbekannt}**) ist fehlgeschlagen. [Job öffnen](${CI_JOB_URL})" \
+          '{type: "message", attachments: [{contentType: "application/vnd.microsoft.card.adaptive", content: {"$schema": "http://adaptivecards.io/schemas/adaptive-card.json", type: "AdaptiveCard", version: "1.4", msTeams: {width: "full"}, body: [{type: "TextBlock", text: $text, size: "medium", wrap: true}]}}]}' \
+          | curl --fail --show-error --silent --max-time 10 --header "Content-Type: application/json" --data @- "${DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK}" \
+          || echo "Teams notification could not be sent"
+      fi
   artifacts:
     when: always
     paths:
