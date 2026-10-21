@@ -73,7 +73,7 @@ security:sbom:scan:scheduled:
       if [ "${CI_JOB_STATUS}" = "failed" ] && [ -n "${DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK}" ] && [ -z "${DEPLOYER_CONFIG_NOTIFICATION_MUTE}" ]; then
         VERSION="$(cat /tmp/sbom-version 2>/dev/null)"
         jq -n --arg text "Der Security-Scan von **${CI_PROJECT_PATH}** (SBOM-Version **${VERSION:-unbekannt}**) ist fehlgeschlagen. [Job öffnen](${CI_JOB_URL})" \
-          '{type: "message", attachments: [{contentType: "application/vnd.microsoft.card.adaptive", content: {"$schema": "http://adaptivecards.io/schemas/adaptive-card.json", type: "AdaptiveCard", version: "1.4", msTeams: {width: "full"}, body: [{type: "TextBlock", text: $text, size: "medium", wrap: true}]}}]}' \
+          '{type: "message", attachments: [{contentType: "application/vnd.microsoft.card.adaptive", contentUrl: null, content: {"$schema": "http://adaptivecards.io/schemas/adaptive-card.json", type: "AdaptiveCard", version: "1.4", msTeams: {width: "full"}, body: [{type: "TextBlock", text: $text, size: "medium", wrap: true}]}}]}' \
           | curl --fail --show-error --silent --max-time 10 --header "Content-Type: application/json" --data @- "${DEPLOYER_CONFIG_NOTIFICATION_MSTEAMS_WEBHOOK}" \
           || echo "Teams notification could not be sent"
       fi
