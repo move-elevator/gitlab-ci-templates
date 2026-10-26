@@ -121,8 +121,9 @@ stages:
   - !reference [.composer-auth, script]
   # check if composer dependencies are actually available for the next steps
   # needed for manual or scheduled jobs with expired artifacts
+  # vendor/ alone is no marker, a cache path below it restores the directory without the packages
   - >
-    if [ ! -d vendor ]; then
+    if [ ! -f vendor/autoload.php ]; then
       composer install --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress --no-scripts --quiet;
     fi
 
