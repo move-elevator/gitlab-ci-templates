@@ -17,10 +17,14 @@ Use `include` to reference template files:
 
 ```yaml
 include:
-   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yml'
-   - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yml'
-   - ...
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yaml'
+    cache: true
+  - ...
 ```
+
+[`cache: true`](https://docs.gitlab.com/ci/yaml/#includecache) keeps each template for one hour instead of fetching it from GitHub on every pipeline creation (GitLab 19.0 or later). Template changes on `main` therefore reach a project with up to one hour delay.
 
 Extend and override configuration variables, see [.base.yaml](.base.yaml) for predefined variables.
 

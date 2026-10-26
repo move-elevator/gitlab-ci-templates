@@ -2,38 +2,70 @@
 # INCLUDES
 #-----------------------------------------------------------------------------------------------------------------------
 include:
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-editorconfig.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-fluid-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-js-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-cs-fixer.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-stan.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-rector.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-style-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typescript-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-yaml-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-rollback.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-cleanup.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-cleanup-downstream.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod-rollback.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-feature-codeception.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom.yaml'
-  - 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom-scan-scheduled.yaml'
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/.base.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-php.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/build/build-node.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-composer-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-editorconfig.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-fluid-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-js-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-cs-fixer.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-stan.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-php-rector.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-style-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typescript-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-yaml-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-xml-lint.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-rollback.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-cleanup.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-feature-cleanup-downstream.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/deploy/deploy-prod-rollback.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/sync/sync-feature-scheduled.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-feature-codeception.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/test/test-prod-codeception.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-feature-warmup.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/cache/cache-prod-warmup.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-composer-check-scheduled.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-npm-check-scheduled.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom.yaml'
+    cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/security/security-sbom-scan-scheduled.yaml'
+    cache: true
 
 #-----------------------------------------------------------------------------------------------------------------------
 # CONFIGURATION (overrides)
