@@ -37,14 +37,14 @@ Extend and override further ci jobs.
 
 ## 📂 Templates
 
-- `.base.yml`: Base configuration, including common variables and stages, required for all projects.
+- `.base.yaml`: Base configuration, including common variables and stages, required for all projects.
 
 ### Build
 
 Build the project and its assets.
 
 Includes:
-- `build/build-php.yml`
+- `build/build-php.yaml`
 - `build/build-node.yaml`
 
 ### Analysis
