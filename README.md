@@ -179,7 +179,7 @@ Includes:
 - `test/test-prod-http-client.yaml`
 - `test/test-prod-playwright.yaml`
 
-Prod E2E tests are manual jobs on semver tags. This includes `test:prod:http`, which previously ran automatically on branches.
+Prod E2E tests are manual jobs on semver tags. This includes `test:prod:http`, which previously ran automatically on branches. Set `PLAYWRIGHT_PROD_MODE: "auto"` to run `test:prod:playwright` automatically on semver tags instead. A failing run then marks the pipeline as failed. Jobs that only `needs` earlier jobs, such as `release`, still run.
 
 > [!NOTE]
 > `PLAYWRIGHT_VERSION` selects the Playwright image and has to match the project's `@playwright/test` version. The Playwright config has to read the target from `process.env.BASE_URL`.
