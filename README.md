@@ -61,6 +61,7 @@ Includes:
 - `analyze/analyze-php-rector.yaml`
 - `analyze/analyze-php-stan.yaml`
 - `analyze/analyze-style-lint.yaml`
+- `analyze/analyze-svg-lint.yaml`
 - `analyze/analyze-typescript-lint.yaml`
 - `analyze/analyze-typoscript-lint.yaml`
 - `analyze/analyze-xml-lint.yaml`
