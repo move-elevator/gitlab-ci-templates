@@ -1,0 +1,30 @@
+# Purpose:
+#   Analyze job for checking that all svg files are optimized
+#
+# Dependency:
+#   Npm script "lint:svg"
+#
+analyze:svg:lint:
+  image:
+    name: ${DEFAULT_IMAGE_BUILD_NODE}
+  stage: analyze
+  needs:
+    - build:node
+  dependencies:
+    - build:node
+  artifacts:
+    reports: { }
+    paths:
+      - node_modules/
+    expire_in: 1 day
+  script:
+    - npm run lint:svg
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline" || $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_TAG == null
+      changes:
+        - "**/*.svg"
+        - "svgo.config.{js,mjs,cjs}"

@@ -26,6 +26,8 @@ include:
     cache: true
   - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-style-lint.yaml'
     cache: true
+  - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-svg-lint.yaml'
+    cache: true
   - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typescript-lint.yaml'
     cache: true
   - remote: 'https://raw.githubusercontent.com/move-elevator/gitlab-ci-templates/main/analyze/analyze-typoscript-lint.yaml'

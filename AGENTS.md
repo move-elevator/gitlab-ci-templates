@@ -16,7 +16,7 @@ include:
 
 - `.base.yaml`: foundation. Default Docker image (`ghcr.io/move-elevator/php8.4-composer:latest`), pipeline variables, stages, and reusable anchors (`.ssh`, `.composer-auth`, `.check-deployment-dependencies`, `.normalize-feature-name`, `.export-environment-url`)
 - `build/`: composer install, npm build, release notes
-- `analyze/`: static analysis and linting (PHPStan, Rector, PHP CS Fixer, ESLint, Stylelint, yamllint, xmllint, editorconfig, Fluid, TypoScript, composer, content blocks)
+- `analyze/`: static analysis and linting (PHPStan, Rector, PHP CS Fixer, ESLint, Stylelint, SVGO, yamllint, xmllint, editorconfig, Fluid, TypoScript, composer, content blocks)
 - `deploy/`: feature, stage and prod deployments with rollback and cleanup, using [deployer](https://deployer.org/) and [deployer-tools](https://github.com/move-elevator/deployer-tools)
 - `sync/`: database and file sync to feature environments
 - `cache/`: cache warmup after deploy
@@ -44,7 +44,7 @@ Job dependencies:
 
 ```
 build:php -> analyze:php:*, test:php:*, deploy:*, sync:*, security:*
-build:node -> analyze:js:lint, analyze:style:lint, test:typescript:unit, test:feature:playwright
+build:node -> analyze:js:lint, analyze:style:lint, analyze:svg:lint, test:typescript:unit, test:feature:playwright
 deploy:feature -> test:feature:http
 deploy:feature -> cache:feature:warmup -> test:feature:codeception, test:feature:playwright
 build:ghost-inspector -> test:feature:ghost-inspector
